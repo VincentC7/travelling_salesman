@@ -26,25 +26,93 @@
     {
       id: 2,
       name: "Nancy",
-      dist: []
+      dist: [
+        {
+          id: 1,
+          dist: 20,
+        },
+        {
+          id: 3,
+          dist: 32,
+        },
+        {
+          id: 4,
+          dist: 42,
+        },
+        {
+          id: 5,
+          dist: 52,
+        }
+      ]
     },
 
     {
       id: 3,
       name: "Metz",
-      dist: []
+      dist: [
+        {
+          id: 2,
+          dist: 32,
+        },
+        {
+          id: 1,
+          dist: 30,
+        },
+        {
+          id: 4,
+          dist: 47,
+        },
+        {
+          id: 5,
+          dist: 57,
+        }
+      ]
     },
 
     {
       id: 4,
       name: "Strasbourg",
-      dist: []
+      dist: [
+        {
+          id: 2,
+          dist: 42,
+        },
+        {
+          id: 1,
+          dist: 40,
+        },
+        {
+          id: 3,
+          dist: 47,
+        },
+        {
+          id: 5,
+          dist: 59,
+        }
+      ]
     },
 
     {
       id: 5,
       name: "Lille",
-      dist: []
+      dist: [
+        {
+          id: 2,
+          dist: 52,
+        },
+        {
+          id: 1,
+          dist: 50,
+        },
+        {
+          id: 4,
+          dist: 59,
+        },
+        {
+          id: 3,
+          dist: 57,
+        }
+      ]
     }
 
   ]
