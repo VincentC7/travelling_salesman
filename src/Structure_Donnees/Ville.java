@@ -24,9 +24,8 @@ public class Ville {
         return false;
     }
 
+    
     //============================================= Getters Setters =========================================
-
-
     public String getNom() {
         return nom;
     }

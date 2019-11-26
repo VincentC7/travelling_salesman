@@ -1,0 +1,51 @@
+{
+  villes: [
+    {
+      id: 1,
+      name: "Paris",
+      dist: [
+        {
+          id: 2,
+          dist: 10,
+        },
+        {
+          id: 3,
+          dist: 30,
+        },
+        {
+          id: 4,
+          dist: 40,
+        },
+        {
+          id: 5,
+          dist: 50,
+        }
+      ],
+    },
+
+    {
+      id: 2,
+      name: "Nancy",
+      dist: []
+    },
+
+    {
+      id: 3,
+      name: "Metz",
+      dist: []
+    },
+
+    {
+      id: 4,
+      name: "Strasbourg",
+      dist: []
+    },
+
+    {
+      id: 5,
+      name: "Lille",
+      dist: []
+    }
+
+  ]
+}
