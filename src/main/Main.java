@@ -1,8 +1,11 @@
 package main;
 
+import Structure_Donnees.Ville;
+
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("coucou");
+        Ville v = new Ville("Nancy");
+        Ville v2 = new Ville("Metz");
     }
 }
