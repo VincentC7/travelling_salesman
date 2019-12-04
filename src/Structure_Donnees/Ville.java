@@ -24,7 +24,11 @@ public class Ville {
         return false;
     }
 
-    
+    @Override
+    public boolean equals(Object obj) {
+        return nom.equals(((Ville)obj).nom);
+    }
+
     //============================================= Getters Setters =========================================
     public String getNom() {
         return nom;
