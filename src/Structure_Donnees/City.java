@@ -24,6 +24,14 @@ public class City {
         return false;
     }
 
+    public int get_distance(String name){
+        return neighbours.get(new City(name));
+    }
+
+    public int get_distance(City c){
+        return neighbours.get(c);
+    }
+
     @Override
     public boolean equals(Object obj) {
         return name.equals(((City)obj).name);
