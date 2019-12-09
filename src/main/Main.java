@@ -7,6 +7,8 @@ public class Main {
     public static void main(String[] args) {
         Graphe g = Graphe.create_graphe("villes.json");
         System.out.println(g);
+        g.initialize(20);
+        g.show_genomes();
     }
 
 }

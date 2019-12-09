@@ -12,6 +12,7 @@ import java.util.*;
 public class Graphe {
     private HashSet<City> cities;
     private City city_start;
+    private ArrayList<Path> listPath;
 
 
     public HashSet<City> getCities() {
@@ -32,6 +33,7 @@ public class Graphe {
 
     Graphe(HashSet<City> cities){
         this.cities = cities;
+        this.listPath = new ArrayList<>();
         List<City> listCities = new ArrayList<>(cities);
         Collections.shuffle(listCities);
         city_start = listCities.get(0);
@@ -47,7 +49,7 @@ public class Graphe {
             //Read JSON file
             Object obj = jsonParser.parse(reader);
             org.json.simple.JSONObject jsonObj = (org.json.simple.JSONObject)obj;
-            org.json.simple.JSONArray villes = (org.json.simple.JSONArray) jsonObj.get("cities");
+            org.json.simple.JSONArray villes = (org.json.simple.JSONArray) jsonObj.get("villes");
             System.out.println(villes);
 
             //Iterate over employee array
@@ -88,4 +90,34 @@ public class Graphe {
         }
         return s;
     }
+
+
+
+
+    public void initialize(int nbGenome){
+
+        List<City> listCities = new ArrayList<>(cities);
+        Path p;
+        for(int i = 0;i<nbGenome;i++){
+            Collections.shuffle(listCities);
+            p = new Path(listCities);
+            p.add_first_last(city_start);
+
+            this.listPath.add(p);
+            Collections.sort(listPath);
+        }
+
+
+    }
+
+    public void show_genomes(){
+        System.out.println(listPath);
+    }
+
+
+    public static int factorielle(int i){
+        if (i==1) return(1);
+        else return(i*factorielle(i-1));
+    }
+
 }
