@@ -1,0 +1,52 @@
+Étape 1 : les bases
+[X]Chargement des villes et distances depuis un fichier fixé
+[X]Graphe supposé complet (c'est à dire qu'il est possible d'aller à toutes les villes depuis chaque ville du fichier)
+    1 seul commercial
+[X]Point de départ (et de retour) fixé : première ville du fichier
+[]Algorithme génétique avec :
+    - [X] taille de la population
+    - [] critère d'arrêt
+    - [] méthode de sélection
+    - [] méthode de recombinaison
+    - [] méthode de remplacement
+    - [] méthode de mutation
+    - [] probabilité de mutation fixes
+    (vous faîtes un choix codé en dur dans vos classes pour cette étape)
+[]Affichage du meilleur chemin et de la distance associée en fin d'exécution de l'algorithme
+
+Ces bases peuvent être programmées directement avec une interface graphique ou en console. Si vous choisissez de
+commencer en console, ne perdez pas de temps sur l'affichage, l'affichage en console a pour unique but de vérifier
+rapidement que vos algorithmes fonctionnent correctement avant de passer au développement de l'interface graphique.
+
+Étape 2 : construction d'une interface graphique (plus complexe que celle de l'étape 1) et paramétrage
+[]Choix laissé à l'utilisateur du fichier des villes / distances grâce à, par exemple, une boîte de dialogue
+[]Choix laissé à l'utilisateur de la ville de départ (et/ou de retour) dans l'interface graphique depuis les
+    villes du fichier
+[]Configuration de la probabilité de mutation
+[]Configuration de la taille de la population
+[]Configuration de la condition du critère d'arrêt (par exemple, si vous choisissez un nombre de générations maximal,
+    laissez l'utilisateur choisir ce maximum)
+[]Configuration de l'algorithme de remplacement : si vous avez choisi un remplacement partiel, laissez l'utilisateur donner
+    la proportion d'individus de l'ancienne génération qui seront conservés
+[]Mise en place du multithreading : à vous de proposer une (ou plusieurs) stratégie(s) de multithreading dans le
+    cadre de ce problème. N'hésitez pas à en discuter avec vos enseignants.
+
+Étape 3 : amélioration de l'interface graphique
+[]Possibilité d'une évolution en continu (sans critère d'arrêt) : l'utilisateur appuie sur un bouton "Démarrage", puis
+    un bouton "Stop" lorsqu'il souhaite arrêter l'algorithme
+[]Pour que cette évolution en continu soit intéressante (c'est-à-dire, que l'utilisateur puisse savoir quand il veut arrêter),
+    il faut indiquer à l'utilisateur en continu le meilleur individu obtenu. Plusieurs possibilités : [simple] un texte (chemin : distance) qui se met à jour à chaque génération, [plus avancé] une courbe meilleure fitness obtenue par génération
+[]Pensez à "ralentir" un peu l'algorithme entre chaque génération, sinon l'utilisateur aura du mal à lire les changements
+[]Choix laissé à l'utilisateur du critère d'arrêt (et de sa configuration) parmi plusieurs possibilités  --
+    voir introduction aux algorithmes génétiques
+[]Choix laissé à l'utilisateur de la méthode de sélection (et de sa configuration) parmi plusieurs possibilités  --
+    voir introduction aux algorithmes génétiques
+[]Choix laissé à l'utilisateur de la méthode de remplacement (et de sa configuration) parmi plusieurs possibilités --
+    voir introduction aux algorithmes génétiques
+[]Mise à jour de votre (vos) stratégie(s) de multithreading si besoin. N'hésitez pas à en discuter avec vos enseignants.
+
+Étape 4 : points plus avancés
+[]Paramétrage et lancement de plusieurs algorithmes génétiques (en parallèle ?) et affichage de leurs différents
+    résultats dans un tableau récapitulatif
+[]Graphe non complet
+[]Plusieurs commerciaux
