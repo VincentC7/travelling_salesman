@@ -6,6 +6,7 @@ import org.json.simple.parser.ParseException;
 
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
@@ -112,7 +113,7 @@ public class Graphe {
 
     }
 
-    public static List<String> list_villes(int nbVilles){
+    private static List<String> list_villes(int nbCities){
         ArrayList<String> villes = new ArrayList<>();
         JSONParser jsonParser = new JSONParser();
 
@@ -123,7 +124,7 @@ public class Graphe {
             org.json.simple.JSONArray arrayVilles = (org.json.simple.JSONArray) obj;
 
 
-            for(int i = 0; i<nbVilles;i++){
+            for(int i = 0; i<nbCities;i++){
                 JSONObject ville = (JSONObject) arrayVilles.get(i);
                 villes.add((String)ville.get("name"));
             }
@@ -136,6 +137,41 @@ public class Graphe {
             e.printStackTrace();
         }
         return villes;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void create_cityJson(int nbCities){
+        JSONArray villes = new JSONArray();
+        ArrayList<String> cities = new ArrayList<>(list_villes(nbCities));
+        Matrix m = Matrix.generate_random_matrix(nbCities);
+        for (int i = 0;i<nbCities;i++){
+            JSONObject city = new JSONObject();
+            city.put("id",i+1);
+            city.put("name",cities.get(i));
+            JSONArray distance = new JSONArray();
+            for (int j = 0;j<nbCities;j++){
+                if(!(j == i)) {
+                    JSONObject cityDist = new JSONObject();
+                    cityDist.put("id", j + 1);
+                    cityDist.put("dist",m.getNumber(i,j));
+                    distance.add(cityDist);
+                }
+            }
+            city.put("dist",distance);
+            villes.add(city);
+        }
+        JSONObject json = new JSONObject();
+        json.put("villes",villes);
+
+        //Write JSON file
+        try (FileWriter file = new FileWriter("cities.json")) {
+
+            file.write(json.toJSONString());
+            file.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

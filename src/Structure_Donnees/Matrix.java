@@ -4,7 +4,7 @@ package Structure_Donnees;
 
 public class Matrix {
 
-    Integer [][] symetrical_matrix;
+    private Integer [][] symetrical_matrix;
     int length;
     private Matrix(Integer [][]matrix){
         this.symetrical_matrix = matrix;
@@ -28,17 +28,25 @@ public class Matrix {
      * get the number in a specific row and column
      * if you want column or row 1 indicate 0
      * @param column column number
-     * @param row
-     * @return
+     * @param row row number
+     * @return value of the intersection between row and column and -1 if ArrayIndexOutOfBoundsException
      */
-    public int getNumber(int row,int column){
+    public Integer getNumber(int row,int column){
         if(column<row){
             int tmp = column;
             column = row;
             row = tmp;
 
         }
-        return this.symetrical_matrix[row][column];
+        try {
+            return this.symetrical_matrix[row][column];
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            e.printStackTrace();
+            return -1;
+        }
+
+
     }
 
     @Override
