@@ -13,6 +13,8 @@ public class Graphe {
     private HashSet<City> cities;
     private City city_start;
     private ArrayList<Path> listPath;
+    public static int MAX_LENGTH = 500;
+    public static int MIN_LENGTH = 100;
 
 
     public HashSet<City> getCities() {
@@ -109,6 +111,34 @@ public class Graphe {
 
 
     }
+
+    public static List<String> list_villes(int nbVilles){
+        ArrayList<String> villes = new ArrayList<>();
+        JSONParser jsonParser = new JSONParser();
+
+        try (FileReader reader = new FileReader("WorldCities.json"))
+        {
+            //Read JSON file
+            Object obj = jsonParser.parse(reader);
+            org.json.simple.JSONArray arrayVilles = (org.json.simple.JSONArray) obj;
+
+
+            for(int i = 0; i<nbVilles;i++){
+                JSONObject ville = (JSONObject) arrayVilles.get(i);
+                villes.add((String)ville.get("name"));
+            }
+
+
+
+
+
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        return villes;
+    }
+
+
 
     public void show_genomes(){
         System.out.println(listPath);
