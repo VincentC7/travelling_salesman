@@ -10,9 +10,10 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        /**
-        Graphe g = Graphe.create_graphe("villes.json");
+        Graphe.create_cityJson(15);
+        Graphe g = Graphe.create_graphe("cities.json");
         System.out.println(g);
+        /**
         g.initialize(20);
         g.show_genomes();
         Matrix m = Matrix.generate_random_matrix(20);
@@ -22,7 +23,7 @@ public class Main {
         System.out.println(m.getNumber(0,1));
         System.out.println(m.getNumber(1,1));
         System.out.println(m.getNumber(20,20));**/
-        Graphe.create_cityJson(6);
+
     }
 
 }
