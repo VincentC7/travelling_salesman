@@ -1,14 +1,16 @@
-package Structure_Donnees;
+package Algo;
 
-import java.util.Iterator;
+import Structure_Donnees.City;
+
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Path implements Comparable{
-    LinkedList<City> path;
+    public LinkedList<City> path;
     private int distance;
 
-    Path(List<City> cityList){
+    public Path(List<City> cityList){
         this.path= new LinkedList<>(cityList);
     }
 
@@ -34,13 +36,21 @@ public class Path implements Comparable{
         path.addLast(c);
     }
 
+    public Path[] split(){
+        LinkedList<City> path1 = new LinkedList<>(path.subList(0,path.size()/2));
+        LinkedList<City> path2 = new LinkedList<>(path.subList(path.size()/2, path.size()));
+        return new Path[]{new Path(path1), new Path(path2)};
+    }
+
+
+
     @Override
     public String toString() {
-        String s ="";
+        StringBuilder sb = new StringBuilder("[");
         for(City c : path){
-            s +=  "["+c.getName()+"]";
+            sb.append(c.getName()).append(" ; ");
         }
-        return s+this.getDistance();
+        return sb.append(" fitness : ").append(this.getDistance()).append("]\n").toString();
     }
 
     @Override

@@ -1,4 +1,5 @@
 package Structure_Donnees;
+import Algo.Path;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,35 +14,15 @@ import java.util.*;
 public class Graphe {
     private HashSet<City> cities;
     private City city_start;
-    private ArrayList<Path> listPath;
     public static int MAX_LENGTH = 500;
     public static int MIN_LENGTH = 100;
 
-
-    public HashSet<City> getCities() {
-        return cities;
-    }
-
-    public void setCities(HashSet<City> cities) {
-        this.cities = cities;
-    }
-
-    public City getCity_start() {
-        return city_start;
-    }
-
-    public void setCity_start(City city_start) {
-        this.city_start = city_start;
-    }
-
     Graphe(HashSet<City> cities){
         this.cities = cities;
-        this.listPath = new ArrayList<>();
         List<City> listCities = new ArrayList<>(cities);
         Collections.shuffle(listCities);
         city_start = listCities.get(0);
         this.cities.remove(city_start);
-
     }
 
     public static Graphe create_graphe(String fichier){
@@ -53,7 +34,6 @@ public class Graphe {
             Object obj = jsonParser.parse(reader);
             org.json.simple.JSONObject jsonObj = (org.json.simple.JSONObject)obj;
             org.json.simple.JSONArray villes = (org.json.simple.JSONArray) jsonObj.get("villes");
-            System.out.println(villes);
 
             //Iterate over employee array
             City[] tabCity = new City[villes.size()];
@@ -94,23 +74,11 @@ public class Graphe {
         return s;
     }
 
-
-
-
-    public void initialize(int nbGenome){
-
-        List<City> listCities = new ArrayList<>(cities);
-        Path p;
-        for(int i = 0;i<nbGenome;i++){
-            Collections.shuffle(listCities);
-            p = new Path(listCities);
-            p.add_first_last(city_start);
-
-            this.listPath.add(p);
-            Collections.sort(listPath);
-        }
-
-
+    public Path generatePath(List<City> listCities){
+        Collections.shuffle(listCities);
+        Path p = new Path(listCities);
+        p.add_first_last(city_start);
+        return p;
     }
 
     private static List<String> list_villes(int nbCities){
@@ -138,7 +106,6 @@ public class Graphe {
         }
         return villes;
     }
-
     @SuppressWarnings("unchecked")
     public static void create_cityJson(int nbCities){
         JSONArray villes = new JSONArray();
@@ -176,14 +143,22 @@ public class Graphe {
 
 
 
-    public void show_genomes(){
-        System.out.println(listPath);
+
+    //========================================================== Getters/Setters ======================================================
+    public HashSet<City> getCities() {
+        return cities;
     }
 
+    public void setCities(HashSet<City> cities) {
+        this.cities = cities;
+    }
 
-    public static int factorielle(int i){
-        if (i==1) return(1);
-        else return(i*factorielle(i-1));
+    public City getCity_start() {
+        return city_start;
+    }
+
+    public void setCity_start(City city_start) {
+        this.city_start = city_start;
     }
 
 }
