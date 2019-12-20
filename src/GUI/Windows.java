@@ -1,16 +1,20 @@
 package GUI;
 
+import org.knowm.xchart.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.SwingWorker;
 
 @SuppressWarnings( "deprecation" )
 public class Windows extends JFrame implements Observer {
 
-
+    XYChart chart;
+    XChartPanel xchart;
     /**
      *laissé à l'utilisateur du fichier des villes / distances grâce à, par exemple, une boîte de dialogue
      *laissé à l'utilisateur de la ville de départ (et/ou de retour) dans l'interface graphique depuis les
@@ -49,6 +53,9 @@ public class Windows extends JFrame implements Observer {
                 JTextField j = (JTextField)e.getSource();
                 if(isDouble(j.getText())){
                     actualValue = j.getText();
+                    System.out.println("start");
+                    chart.updateXYSeries("Fitness",new double [] {1,2,3,4},new double [] {400,350,360,320},null);
+                    xchart.updateUI();
                 }
                 else{
                     j.setText(actualValue);
@@ -82,10 +89,16 @@ public class Windows extends JFrame implements Observer {
         c.gridy=1;
         c.weighty=3;
         lowerPanel.setBackground(Color.BLACK);
+
+        this.chart = new XYChartBuilder().width(600).height(400).xAxisTitle("X").yAxisTitle("Y").build();
+        chart.addSeries("Fitness",new double [] {100,200},new double [] {100,200});
+        this.xchart = new XChartPanel(chart);
+        lowerPanel.add(xchart);
         this.add(lowerPanel,c);
+
         this.setTitle("Travelling Saleman");
         this.setLocationRelativeTo(null);
-        this.setMinimumSize(new Dimension(600,400));
+        this.setMinimumSize(new Dimension(600,600));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
