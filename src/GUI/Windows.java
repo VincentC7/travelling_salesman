@@ -2,6 +2,8 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -34,6 +36,25 @@ public class Windows extends JFrame implements Observer {
         upperPanel.setLayout(fl);
         JLabel jlabel1 = new JLabel("Probabilité mutation");
         JTextField jtext1 = new JTextField(4);
+        jtext1.addFocusListener(new FocusListener() {
+            String actualValue = "";
+            @Override
+            public void focusGained(FocusEvent e) {
+                actualValue = ((JTextField)e.getSource()).getText();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+
+                JTextField j = (JTextField)e.getSource();
+                if(isDouble(j.getText())){
+                    actualValue = j.getText();
+                }
+                else{
+                    j.setText(actualValue);
+                }
+            }
+        });
         //jtext1.setMinimumSize(new Dimension(100,50));
         JLabel jlabel2 = new JLabel("Taille de la population");
         JTextField jtext2 = new JTextField(5);
@@ -62,8 +83,7 @@ public class Windows extends JFrame implements Observer {
         c.weighty=3;
         lowerPanel.setBackground(Color.BLACK);
         this.add(lowerPanel,c);
-        this.setTitle("");
-        this.setSize(600, 400);
+        this.setTitle("Travelling Saleman");
         this.setLocationRelativeTo(null);
         this.setMinimumSize(new Dimension(600,400));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,5 +92,15 @@ public class Windows extends JFrame implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         this.repaint();
+    }
+
+    static boolean isDouble(String value) {
+        try {
+            double d = Double.parseDouble(value);
+
+            return (value.length() <= 4 &&  d >= 0 && d <= 1 );
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
