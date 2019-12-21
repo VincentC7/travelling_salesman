@@ -1,6 +1,5 @@
 package main;
 
-
 import Algo.TravellingSaleman;
 
 public class Main {

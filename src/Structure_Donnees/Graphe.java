@@ -12,14 +12,14 @@ import java.io.IOException;
 import java.util.*;
 
 public class Graphe {
-    private HashSet<City> cities;
+    private static HashSet<City> cities;
     private City city_start;
     public static int MAX_LENGTH = 500;
     public static int MIN_LENGTH = 100;
 
-    Graphe(HashSet<City> cities){
-        this.cities = cities;
-        List<City> listCities = new ArrayList<>(cities);
+    Graphe(HashSet<City> p_cities){
+        cities = p_cities;
+        List<City> listCities = new ArrayList<>(p_cities);
         Collections.shuffle(listCities);
         city_start = listCities.get(0);
         this.cities.remove(city_start);

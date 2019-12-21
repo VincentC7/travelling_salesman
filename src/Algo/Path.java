@@ -2,6 +2,9 @@ package Algo;
 
 import Structure_Donnees.City;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,9 +44,20 @@ public class Path implements Comparable{
         return new Path[]{new Path(path1), new Path(path2)};
     }
 
-    public static Path merge(Path path_left, Path path_right){
-        path_left.cities.addAll(path_right.cities);
-        return path_left;
+    public static Path merge(Path path_left, Path path_right, HashSet<City> p_cities){
+        ArrayList<City> cities = new ArrayList<>(p_cities);
+        ArrayList<City> newPath = new ArrayList<>(path_left.cities);
+        cities.removeAll(newPath);
+        for (int i=0;i<path_right.cities.size()-1;i++) {
+            City city = path_right.cities.get(i);
+            if (!newPath.contains(city)) {
+                newPath.add(city);
+                cities.remove(city);
+            }
+        }
+        newPath.addAll(cities);
+        newPath.add(newPath.get(0));
+        return new Path(newPath);
     }
 
 
