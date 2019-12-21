@@ -18,7 +18,6 @@ import javax.swing.SwingWorker;
 @SuppressWarnings( "deprecation" )
 public class Windows extends JFrame implements Observer {
 
-    XYChart chart;
     XYChartPanelTS xchart;
     /**
      *laissé à l'utilisateur du fichier des villes / distances grâce à, par exemple, une boîte de dialogue
@@ -45,40 +44,30 @@ public class Windows extends JFrame implements Observer {
         upperPanel.setLayout(fl);
         JLabel jlabel1 = new JLabel("Probabilité mutation");
         JTextField jtext1 = new JTextField(4);
-        jtext1.addFocusListener(new FocusListener() {
-            String actualValue = "";
-            @Override
-            public void focusGained(FocusEvent e) {
-                actualValue = ((JTextField)e.getSource()).getText();
-            }
+        jtext1.addFocusListener(new FocusListenerMutator(2));
 
-            @Override
-            public void focusLost(FocusEvent e) {
-
-                JTextField j = (JTextField)e.getSource();
-                if(isDouble(j.getText())){
-                    actualValue = j.getText();
-
-                }
-                else{
-                    j.setText(actualValue);
-                }
-            }
-        });
-        //jtext1.setMinimumSize(new Dimension(100,50));
         JLabel jlabel2 = new JLabel("Taille de la population");
         JTextField jtext2 = new JTextField(5);
-        //jtext2.setMinimumSize(new Dimension(100,50));
         JButton jb = new JButton("test");
         jb.addActionListener(new ActionListener() {
             int compteur = 1;
             ArrayList<Double> arraytemp = new ArrayList<>();
             @Override
             public void actionPerformed(ActionEvent e) {
-                arraytemp.add(Math.random()*100);
-                double [] temp = arraytemp.stream().mapToDouble(d -> d).toArray();
-                xchart.addData("Fitness",temp,compteur);
-                this.compteur++;
+                new Thread(() -> {
+                    while(true) {
+                        arraytemp.add(Math.random() * 100);
+                        double[] temp = arraytemp.stream().mapToDouble(d -> d).toArray();
+                        xchart.addData("Fitness", temp, compteur);
+                        compteur++;
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }).start();
+
 
             }
         });
@@ -107,13 +96,14 @@ public class Windows extends JFrame implements Observer {
         //this.chart = new XYChartBuilder().width(600).height(400).xAxisTitle("X").yAxisTitle("Y").build();
         //chart.addSeries("Fitness",new double [] { 0 },new double [] { 0 });
         //this.xchart = new XYChartPanelTS(chart);
-        this.xchart = new XYChartPanelTS("X","Y","Fitness",600,400);
+        this.xchart = new XYChartPanelTS("X","Y","Fitness",800,400);
         lowerPanel.add(xchart);
         this.add(lowerPanel,c);
         this.setTitle("Travelling Saleman");
         this.setLocationRelativeTo(null);
-        this.setMinimumSize(new Dimension(600,600));
+        this.setMinimumSize(new Dimension(800,600));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
     }
 
     @Override
@@ -121,13 +111,5 @@ public class Windows extends JFrame implements Observer {
         this.repaint();
     }
 
-    static boolean isDouble(String value) {
-        try {
-            double d = Double.parseDouble(value);
 
-            return (value.length() <= 4 &&  d >= 0 && d <= 1 );
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
 }
