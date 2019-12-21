@@ -4,8 +4,13 @@ import org.knowm.xchart.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.SwingWorker;
@@ -14,7 +19,7 @@ import javax.swing.SwingWorker;
 public class Windows extends JFrame implements Observer {
 
     XYChart chart;
-    XChartPanel xchart;
+    XYChartPanelTS xchart;
     /**
      *laissé à l'utilisateur du fichier des villes / distances grâce à, par exemple, une boîte de dialogue
      *laissé à l'utilisateur de la ville de départ (et/ou de retour) dans l'interface graphique depuis les
@@ -53,9 +58,7 @@ public class Windows extends JFrame implements Observer {
                 JTextField j = (JTextField)e.getSource();
                 if(isDouble(j.getText())){
                     actualValue = j.getText();
-                    System.out.println("start");
-                    chart.updateXYSeries("Fitness",new double [] {1,2,3,4},new double [] {400,350,360,320},null);
-                    xchart.updateUI();
+
                 }
                 else{
                     j.setText(actualValue);
@@ -66,12 +69,24 @@ public class Windows extends JFrame implements Observer {
         JLabel jlabel2 = new JLabel("Taille de la population");
         JTextField jtext2 = new JTextField(5);
         //jtext2.setMinimumSize(new Dimension(100,50));
+        JButton jb = new JButton("test");
+        jb.addActionListener(new ActionListener() {
+            int compteur = 1;
+            ArrayList<Double> arraytemp = new ArrayList<>();
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                arraytemp.add(Math.random()*100);
+                double [] temp = arraytemp.stream().mapToDouble(d -> d).toArray();
+                xchart.addData("Fitness",temp,compteur);
+                this.compteur++;
 
-
+            }
+        });
         upperPanel.add(jlabel1);
         upperPanel.add(jtext1);
         upperPanel.add(jlabel2);
         upperPanel.add(jtext2);
+        upperPanel.add(jb);
         c.weightx=1;
         c.weighty=1;
         c.fill = GridBagConstraints.BOTH;
@@ -89,13 +104,12 @@ public class Windows extends JFrame implements Observer {
         c.gridy=1;
         c.weighty=3;
         lowerPanel.setBackground(Color.BLACK);
-
-        this.chart = new XYChartBuilder().width(600).height(400).xAxisTitle("X").yAxisTitle("Y").build();
-        chart.addSeries("Fitness",new double [] {100,200},new double [] {100,200});
-        this.xchart = new XChartPanel(chart);
+        //this.chart = new XYChartBuilder().width(600).height(400).xAxisTitle("X").yAxisTitle("Y").build();
+        //chart.addSeries("Fitness",new double [] { 0 },new double [] { 0 });
+        //this.xchart = new XYChartPanelTS(chart);
+        this.xchart = new XYChartPanelTS("X","Y","Fitness",600,400);
         lowerPanel.add(xchart);
         this.add(lowerPanel,c);
-
         this.setTitle("Travelling Saleman");
         this.setLocationRelativeTo(null);
         this.setMinimumSize(new Dimension(600,600));
