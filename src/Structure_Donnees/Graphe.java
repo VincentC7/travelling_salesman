@@ -90,17 +90,10 @@ public class Graphe {
             //Read JSON file
             Object obj = jsonParser.parse(reader);
             org.json.simple.JSONArray arrayVilles = (org.json.simple.JSONArray) obj;
-
-
             for(int i = 0; i<nbCities;i++){
                 JSONObject ville = (JSONObject) arrayVilles.get(i);
                 villes.add((String)ville.get("name"));
             }
-
-
-
-
-
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }

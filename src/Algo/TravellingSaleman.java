@@ -41,11 +41,14 @@ public class TravellingSaleman {
             best_path_by_gen.add(population.get(0));
             System.out.println("====Generation : "+current_generation+"========================================================================================================================");
             ArrayList<Path> selected = selection();
+            System.out.println(selected);
+            System.out.println();
             ArrayList<Path> recomined_population = crossing_over(selected);
+            System.out.println(recomined_population);
             //ArrayList<Path> mutated_population = mutation(recomined_population);
             remplacement(recomined_population);
             //System.out.println(population);
-            System.out.println(population.get(0));
+            //System.out.println(population.get(0));
             current_generation++;
         }
     }
@@ -88,8 +91,7 @@ public class TravellingSaleman {
     }
 
     private void remplacement(ArrayList<Path> mutated_population){
-
-        ArrayList<Path> new_population = new ArrayList<>(population.subList(0, (int) (POPULATION_SIZE*(1-PERSENTAGE_REMPLACEMENT))));
+        ArrayList<Path> new_population = new ArrayList<>(population.subList(0, (int) (POPULATION_SIZE*(1-PERSENTAGE_REMPLACEMENT)+1)));
         new_population.addAll(mutated_population);
         setPopulation(new_population);
     }
