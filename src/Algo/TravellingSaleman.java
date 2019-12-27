@@ -11,10 +11,10 @@ import java.util.List;
 
 public class TravellingSaleman {
 
-    private static final int MAX_GENERATION = 50;
+    private static final int MAX_GENERATION = 500;
     private static final int POPULATION_SIZE = 100;
-    private static final double PERSENTAGE_REMPLACEMENT = 0.9;
-    private static final double PERSENTAGE_MUTATION = 0.1;
+    private static final double PERSENTAGE_REMPLACEMENT = 0.7;
+    private static final double PERSENTAGE_MUTATION = 0.9;
 
     private int current_generation;
     private Graphe graphe;
@@ -23,6 +23,7 @@ public class TravellingSaleman {
     
     public TravellingSaleman(){
         current_generation=1;
+        Graphe.create_cityJson(25);
         graphe = Graphe.create_graphe("cities.json");
         assert graphe != null;
         
@@ -42,10 +43,23 @@ public class TravellingSaleman {
             ArrayList<Path> selected = selection();
             ArrayList<Path> recomined_population = crossing_over(selected);
             ArrayList<Path> muted_population = mutation(recomined_population);
+            //System.out.println(population);
             remplacement(muted_population);
+            /*
+             System.out.println(selected);
+             System.out.println();
+             System.out.println(recomined_population);
+             System.out.println();
+             System.out.println(muted_population);
+             System.out.println();
+             System.out.println(population);
+             System.out.println();
+             */
             System.out.println(population.get(0));
             current_generation++;
         }
+        System.out.println("##########Meilleur chemin##########");
+        System.out.println(best_path_by_gen.get(best_path_by_gen.size()-1));
     }
 
     //selection des k premiers individus
@@ -84,8 +98,8 @@ public class TravellingSaleman {
 
     private ArrayList<Path> mutation(ArrayList<Path> recombined_population){
         for (Path path : recombined_population) {
-            int rand = (int) (Math.random()*10);
-            if (rand == PERSENTAGE_MUTATION*10){ // rand == 1 => mutation
+            int rand = (int) (Math.random());
+            if (rand <= PERSENTAGE_MUTATION){ // rand == 1 => mutation
                 path.mutate();
             }
         }

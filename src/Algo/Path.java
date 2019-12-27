@@ -11,13 +11,11 @@ public class Path implements Comparable{
 
     public Path(List<City> cityList){
         this.cities = new LinkedList<>(cityList);
+        calculate_distance();
     }
 
 
     public int getDistance() {
-        if (distance==0){
-            distance = calculate_distance();
-        }
         return distance;
     }
 
@@ -75,6 +73,7 @@ public class Path implements Comparable{
             cities.set(index, cities.get(index-1));
             cities.set(index-1, c);
         }
+        calculate_distance();
     }
 
 
