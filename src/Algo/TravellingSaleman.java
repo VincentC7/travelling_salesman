@@ -6,27 +6,23 @@ import Structure_Donnees.Graphe;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class TravellingSaleman {
 
-    private static final int MAX_GENERATION = 100;
-    private static final int POPULATION_SIZE = 10;
-
+    private static final int MAX_GENERATION = 50;
+    private static final int POPULATION_SIZE = 100;
     private static final double PERSENTAGE_REMPLACEMENT = 0.9;
     private static final double PERSENTAGE_MUTATION = 0.1;
 
     private int current_generation;
     private Graphe graphe;
-    
     private ArrayList<Path> population;
     private ArrayList<Path> best_path_by_gen;
     
     public TravellingSaleman(){
         current_generation=1;
-        Graphe.create_cityJson(15);
         graphe = Graphe.create_graphe("cities.json");
         assert graphe != null;
         
@@ -35,24 +31,24 @@ public class TravellingSaleman {
     }
 
 
-    public void startAlgo(){
+    public void runAlgo(){
+        //creation des premiers chemins
         initialize(POPULATION_SIZE);
+
+        //creation des générations
         while (current_generation != MAX_GENERATION){
             best_path_by_gen.add(population.get(0));
             System.out.println("====Generation : "+current_generation+"========================================================================================================================");
             ArrayList<Path> selected = selection();
-            System.out.println(selected);
-            System.out.println();
             ArrayList<Path> recomined_population = crossing_over(selected);
-            System.out.println(recomined_population);
-            //ArrayList<Path> mutated_population = mutation(recomined_population);
-            remplacement(recomined_population);
-            //System.out.println(population);
-            //System.out.println(population.get(0));
+            ArrayList<Path> muted_population = mutation(recomined_population);
+            remplacement(muted_population);
+            System.out.println(population.get(0));
             current_generation++;
         }
     }
 
+    //selection des k premiers individus
     private ArrayList<Path> selection(){
         ArrayList<Path> best_of_population = new ArrayList<>();
         DecimalFormat df = new DecimalFormat("#");
@@ -87,12 +83,20 @@ public class TravellingSaleman {
     }
 
     private ArrayList<Path> mutation(ArrayList<Path> recombined_population){
+        for (Path path : recombined_population) {
+            int rand = (int) (Math.random()*10);
+            if (rand == PERSENTAGE_MUTATION*10){ // rand == 1 => mutation
+                path.mutate();
+            }
+        }
         return recombined_population;
     }
 
+    //remplacement partiel
     private void remplacement(ArrayList<Path> mutated_population){
         ArrayList<Path> new_population = new ArrayList<>(population.subList(0, (int) (POPULATION_SIZE*(1-PERSENTAGE_REMPLACEMENT)+1)));
         new_population.addAll(mutated_population);
+        Collections.sort(new_population);
         setPopulation(new_population);
     }
 

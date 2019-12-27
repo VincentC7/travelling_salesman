@@ -3,10 +3,7 @@ package Algo;
 import Structure_Donnees.City;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Path implements Comparable{
     public LinkedList<City> cities;
@@ -37,6 +34,7 @@ public class Path implements Comparable{
         cities.addFirst(c);
         cities.addLast(c);
     }
+    
 
     public Path[] split(){
         LinkedList<City> path1 = new LinkedList<>(cities.subList(0, cities.size()/2));
@@ -47,17 +45,36 @@ public class Path implements Comparable{
     public static Path merge(Path path_left, Path path_right, HashSet<City> p_cities){
         ArrayList<City> cities = new ArrayList<>(p_cities);
         ArrayList<City> newPath = new ArrayList<>(path_left.cities);
+        ArrayList<Integer> duplicated_indexs = new ArrayList<>();
         cities.removeAll(newPath);
         for (int i=0;i<path_right.cities.size()-1;i++) {
             City city = path_right.cities.get(i);
             if (!newPath.contains(city)) {
                 newPath.add(city);
                 cities.remove(city);
+            }else{
+                duplicated_indexs.add(i+path_left.cities.size()-1);
             }
         }
-        newPath.addAll(cities);
+        for (Integer duplicated_index : duplicated_indexs) {
+            newPath.add(duplicated_index,cities.get(0));
+            cities.remove(0);
+        }
         newPath.add(newPath.get(0));
         return new Path(newPath);
+    }
+
+    public void mutate() {
+        int index = (int) (Math.random() * (cities.size()-2))+1;
+        if (index+1 != cities.size()-1){
+            City c = cities.get(index);
+            cities.set(index, cities.get(index+1));
+            cities.set(index+1, c);
+        }else {
+            City c = cities.get(index);
+            cities.set(index, cities.get(index-1));
+            cities.set(index-1, c);
+        }
     }
 
 
@@ -85,4 +102,6 @@ public class Path implements Comparable{
     public int compareTo(Object o) {
         return this.getDistance() - ((Path)o).getDistance();
     }
+
+
 }
