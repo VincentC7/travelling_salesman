@@ -5,14 +5,14 @@
 [X]Point de départ (et de retour) fixé : première ville du fichier
 []Algorithme génétique avec :
     - [X] taille de la population
-    - [] critère d'arrêt
-    - [] méthode de sélection
-    - [] méthode de recombinaison
-    - [] méthode de remplacement
-    - [] méthode de mutation
-    - [] probabilité de mutation fixes
+    - [X] critère d'arrêt
+    - [X] méthode de sélection
+    - [X] méthode de recombinaison
+    - [X] méthode de remplacement
+    - [X] méthode de mutation
+    - [X] probabilité de mutation fixes
     (vous faîtes un choix codé en dur dans vos classes pour cette étape)
-[]Affichage du meilleur chemin et de la distance associée en fin d'exécution de l'algorithme
+[X]Affichage du meilleur chemin et de la distance associée en fin d'exécution de l'algorithme
 
 Ces bases peuvent être programmées directement avec une interface graphique ou en console. Si vous choisissez de
 commencer en console, ne perdez pas de temps sur l'affichage, l'affichage en console a pour unique but de vérifier

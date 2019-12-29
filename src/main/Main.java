@@ -1,11 +1,14 @@
 package main;
 
-import Algo.TravellingSaleman;
+import Algo.TravellingSalesman;
 
 public class Main {
 
     public static void main(String[] args) {
-        TravellingSaleman travellingSaleman = new TravellingSaleman();
-        travellingSaleman.startAlgo();
+
+        //Graphe.create_cityJson(15);
+
+        TravellingSalesman travellingSaleman = new TravellingSalesman();
+        travellingSaleman.runAlgo();
     }
 }
