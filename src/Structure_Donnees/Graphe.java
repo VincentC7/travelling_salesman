@@ -14,15 +14,15 @@ import java.util.*;
 public class Graphe {
     private static HashSet<City> cities;
     private City city_start;
-    public static int MAX_LENGTH = 500;
-    public static int MIN_LENGTH = 100;
+    static int MAX_LENGTH = 5000;
+    static int MIN_LENGTH = 10;
 
-    Graphe(HashSet<City> p_cities){
+    Graphe(HashSet<City> p_cities, City p_city_start){
         cities = p_cities;
         List<City> listCities = new ArrayList<>(p_cities);
+        city_start = p_city_start;
         Collections.shuffle(listCities);
-        city_start = listCities.get(0);
-        this.cities.remove(city_start);
+        cities.remove(city_start);
     }
 
     public static Graphe create_graphe(String fichier){
@@ -55,7 +55,7 @@ public class Graphe {
                 });
             }
             HashSet<City> city = new HashSet<>(Set.of(tabCity));
-            return new Graphe(city);
+            return new Graphe(city, tabCity[0]);
 
 
         } catch (IOException | ParseException e) {

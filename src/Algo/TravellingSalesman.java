@@ -9,57 +9,68 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TravellingSaleman {
+public class TravellingSalesman {
 
-    private static final int MAX_GENERATION = 500;
-    private static final int POPULATION_SIZE = 100;
+    private static final int MAX_GENERATION = 1000;
+    private static final int POPULATION_SIZE = 50;
     private static final double PERSENTAGE_REMPLACEMENT = 0.7;
-    private static final double PERSENTAGE_MUTATION = 0.9;
+    private static final double PERSENTAGE_MUTATION = 0.1;
+    public static final double CROSSING_POINT = 0.5;
 
     private int current_generation;
     private Graphe graphe;
     private ArrayList<Path> population;
-    private ArrayList<Path> best_path_by_gen;
+    private ArrayList<Path> fitness;
     
-    public TravellingSaleman(){
+    public TravellingSalesman(){
         current_generation=1;
-        Graphe.create_cityJson(25);
         graphe = Graphe.create_graphe("cities.json");
         assert graphe != null;
         
         population =new ArrayList<>();
-        best_path_by_gen = new ArrayList<>();
+        fitness = new ArrayList<>();
     }
-
 
     public void runAlgo(){
         //creation des premiers chemins
-        initialize(POPULATION_SIZE);
+        initialize();
 
         //creation des générations
         while (current_generation != MAX_GENERATION){
-            best_path_by_gen.add(population.get(0));
-            System.out.println("====Generation : "+current_generation+"========================================================================================================================");
+            fitness.add(population.get(0));
+            System.out.println("====Generation : "+current_generation+"==========================================================================================================================================================================================");
+            System.out.println("Population au départ");
+            System.out.println(population);
+            System.out.println();
+
             ArrayList<Path> selected = selection();
+            System.out.println("individues sélectionnés");
+            System.out.println(selected);
+            System.out.println();
+
             ArrayList<Path> recomined_population = crossing_over(selected);
+            System.out.println("fils engendrés");
+            System.out.println(recomined_population);
+            System.out.println();
+
             ArrayList<Path> muted_population = mutation(recomined_population);
-            //System.out.println(population);
+            System.out.println("fils mutés");
+            System.out.println(muted_population);
+            System.out.println();
+
             remplacement(muted_population);
-            /*
-             System.out.println(selected);
-             System.out.println();
-             System.out.println(recomined_population);
-             System.out.println();
-             System.out.println(muted_population);
-             System.out.println();
-             System.out.println(population);
-             System.out.println();
-             */
+
+            System.out.println("Nouvelle population");
+            System.out.println(population);
+            System.out.println();
+
+            System.out.println("Meilleur chemin");
             System.out.println(population.get(0));
             current_generation++;
         }
         System.out.println("##########Meilleur chemin##########");
-        System.out.println(best_path_by_gen.get(best_path_by_gen.size()-1));
+        System.out.println(fitness.get(fitness.size()-1));
+        System.out.println(fitness);
     }
 
     //selection des k premiers individus
@@ -74,32 +85,20 @@ public class TravellingSaleman {
 
     private ArrayList<Path> crossing_over(ArrayList<Path> selected){
         ArrayList<Path> recomined_population = new ArrayList<>();
-        ArrayList<Path> list_left_path = new ArrayList<>();
-        ArrayList<Path> list_right_path = new ArrayList<>();
-        for (Path p : selected){
-            Path[] split_path = p.split();
-            list_left_path.add(split_path[0]);
-            list_right_path.add(split_path[1]);
+        for (Path path1 : selected) {
+            for (Path path2 : selected) {
+                if (path1!=path2){
+                    recomined_population.add(path1.createSon(path2));
+                }
+            }
         }
-        ArrayList<String> indexs_used = new ArrayList<>();
-        for (int i = 0; i < POPULATION_SIZE*PERSENTAGE_REMPLACEMENT; i++) {
-            int left_index,right_index;
-            do{
-                left_index = (int) (Math.random()*list_left_path.size());
-                right_index = (int) (Math.random()*list_right_path.size());
-            }while (left_index==right_index || indexs_used.contains(left_index+" "+right_index));
-            assert left_index != right_index;
-            indexs_used.add(left_index+" "+right_index);
-            recomined_population.add(Path.merge(list_left_path.get(left_index),list_right_path.get(right_index), graphe.getCities()));
-        }
-        Collections.sort(recomined_population);
         return recomined_population;
     }
 
     private ArrayList<Path> mutation(ArrayList<Path> recombined_population){
         for (Path path : recombined_population) {
             int rand = (int) (Math.random());
-            if (rand <= PERSENTAGE_MUTATION){ // rand == 1 => mutation
+            if (rand <= PERSENTAGE_MUTATION){ // rand <= 1 : mutation
                 path.mutate();
             }
         }
@@ -110,13 +109,13 @@ public class TravellingSaleman {
     private void remplacement(ArrayList<Path> mutated_population){
         ArrayList<Path> new_population = new ArrayList<>(population.subList(0, (int) (POPULATION_SIZE*(1-PERSENTAGE_REMPLACEMENT)+1)));
         new_population.addAll(mutated_population);
-        Collections.sort(new_population);
         setPopulation(new_population);
+        Collections.sort(population);
     }
 
-    private void initialize(int nbGenome){
+    private void initialize(){
         List<City> cityList = new ArrayList<>(graphe.getCities());
-        for(int i = 0;i<nbGenome;i++){
+        for(int i = 0; i<POPULATION_SIZE; i++){
            population.add(graphe.generatePath(cityList));
         }
         Collections.sort(population);
@@ -130,5 +129,9 @@ public class TravellingSaleman {
 
     public void setPopulation(ArrayList<Path> population) {
         this.population = population;
+    }
+
+    public Path getBestPath() {
+        return fitness.get(fitness.size()-1);
     }
 }

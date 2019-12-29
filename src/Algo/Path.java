@@ -2,8 +2,8 @@ package Algo;
 
 import Structure_Donnees.City;
 
-import java.lang.reflect.Array;
 import java.util.*;
+
 
 public class Path implements Comparable{
     public LinkedList<City> cities;
@@ -20,9 +20,8 @@ public class Path implements Comparable{
     }
 
     private int calculate_distance(){
-        int i = cities.size();
         distance=0;
-        for(int j = 0;j<i-1;j++){
+        for(int j = 0;j<cities.size()-1;j++){
             distance+= cities.get(j).get_distance(cities.get(j+1));
         }
         return distance;
@@ -32,34 +31,23 @@ public class Path implements Comparable{
         cities.addFirst(c);
         cities.addLast(c);
     }
-    
 
-    public Path[] split(){
-        LinkedList<City> path1 = new LinkedList<>(cities.subList(0, cities.size()/2));
-        LinkedList<City> path2 = new LinkedList<>(cities.subList(cities.size()/2, cities.size()));
-        return new Path[]{new Path(path1), new Path(path2)};
-    }
 
-    public static Path merge(Path path_left, Path path_right, HashSet<City> p_cities){
-        ArrayList<City> cities = new ArrayList<>(p_cities);
-        ArrayList<City> newPath = new ArrayList<>(path_left.cities);
-        ArrayList<Integer> duplicated_indexs = new ArrayList<>();
-        cities.removeAll(newPath);
-        for (int i=0;i<path_right.cities.size()-1;i++) {
-            City city = path_right.cities.get(i);
-            if (!newPath.contains(city)) {
-                newPath.add(city);
-                cities.remove(city);
-            }else{
-                duplicated_indexs.add(i+path_left.cities.size()-1);
-            }
+    public Path createSon(Path other_parent){
+        int index = (int) (TravellingSalesman.CROSSING_POINT * cities.size()-1);
+        ArrayList<City> cross_part = new ArrayList<>(other_parent.cities.subList(index,cities.size()-1));
+        ArrayList<City> new_path = new ArrayList<>(cities);
+        City start = cities.get(0);
+        new_path.remove(0);
+        new_path.remove(new_path.size()-1);
+        for (City city : cross_part) {
+            new_path.remove(city);
         }
-        for (Integer duplicated_index : duplicated_indexs) {
-            newPath.add(duplicated_index,cities.get(0));
-            cities.remove(0);
-        }
-        newPath.add(newPath.get(0));
-        return new Path(newPath);
+        Collections.shuffle(cross_part);
+        new_path.addAll(cross_part);
+        new_path.add(0,start);
+        new_path.add(new_path.size(),start);
+        return new Path(new_path);
     }
 
     public void mutate() {
