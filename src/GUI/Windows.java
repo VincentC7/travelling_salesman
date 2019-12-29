@@ -1,5 +1,7 @@
 package GUI;
 
+import Algo.Path;
+import Algo.TravellingSalesman;
 import org.knowm.xchart.*;
 
 import javax.swing.*;
@@ -11,8 +13,10 @@ import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.stream.Collectors;
 import javax.swing.SwingWorker;
 import javax.swing.plaf.basic.BasicMenuBarUI;
 
@@ -20,6 +24,7 @@ import javax.swing.plaf.basic.BasicMenuBarUI;
 public class Windows extends JFrame implements Observer {
 
     XYChartPanelTS xchart;
+    TravellingSalesman travellingSaleman;
     /**
      *laissé à l'utilisateur du fichier des villes / distances grâce à, par exemple, une boîte de dialogue
      *laissé à l'utilisateur de la ville de départ (et/ou de retour) dans l'interface graphique depuis les
@@ -39,7 +44,8 @@ public class Windows extends JFrame implements Observer {
     public Windows(/*Observable o*/){
         //o.addObserver(this);
         GridBagConstraints c = new GridBagConstraints();
-
+        travellingSaleman = new TravellingSalesman();
+        travellingSaleman.addObserver(this);
         this.setLayout(new GridBagLayout());
 
         JMenuBar jmb = new JMenuBar();
@@ -77,17 +83,8 @@ public class Windows extends JFrame implements Observer {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new Thread(() -> {
-                    while(true) {
-                        arraytemp.add(Math.random() * 100);
-                        double[] temp = arraytemp.stream().mapToDouble(d -> d).toArray();
-                        xchart.addData("Fitness", temp, compteur);
-                        compteur++;
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
+
+                    travellingSaleman.runAlgo();
                 }).start();
 
 
@@ -130,7 +127,10 @@ public class Windows extends JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        this.repaint();
+        TravellingSalesman ts = (TravellingSalesman)o;
+        List<Integer> array = ts.getFitness().stream().map(Path::getDistance).collect(Collectors.toList());
+        double[] doubleArray = array.stream().mapToDouble(d -> d.doubleValue()).toArray();
+        xchart.addData("Fitness",doubleArray, ts.getCurrent_generation());
     }
 
 

@@ -8,8 +8,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
 
-public class TravellingSalesman {
+public class TravellingSalesman extends Observable {
 
     private static int MAX_GENERATION = 1000;
     private static int POPULATION_SIZE = 50;
@@ -38,6 +39,9 @@ public class TravellingSalesman {
         //creation des générations
         while (current_generation != MAX_GENERATION){
             fitness.add(population.get(0));
+            setChanged();
+            notifyObservers();
+
             System.out.println("====Generation : "+current_generation+"==========================================================================================================================================================================================");
             System.out.println("Population au départ");
             System.out.println(population);
@@ -68,6 +72,8 @@ public class TravellingSalesman {
             System.out.println(population.get(0));
             current_generation++;
         }
+        setChanged();
+        notifyObservers();
         System.out.println("##########Meilleur chemin##########");
         System.out.println(fitness.get(fitness.size()-1));
         System.out.println(fitness);
@@ -153,5 +159,13 @@ public class TravellingSalesman {
 
     public static void setCrossingPoint(double crossingPoint) {
         CROSSING_POINT = crossingPoint;
+    }
+
+    public ArrayList<Path> getFitness() {
+        return fitness;
+    }
+
+    public int getCurrent_generation() {
+        return current_generation;
     }
 }
