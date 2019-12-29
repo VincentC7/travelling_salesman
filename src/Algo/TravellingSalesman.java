@@ -11,11 +11,11 @@ import java.util.List;
 
 public class TravellingSalesman {
 
-    private static final int MAX_GENERATION = 1000;
-    private static final int POPULATION_SIZE = 50;
-    private static final double PERSENTAGE_REMPLACEMENT = 0.7;
-    private static final double PERSENTAGE_MUTATION = 0.1;
-    public static final double CROSSING_POINT = 0.5;
+    private static int MAX_GENERATION = 1000;
+    private static int POPULATION_SIZE = 50;
+    private static double PERSENTAGE_REMPLACEMENT = 0.7;
+    private static double PERSENTAGE_MUTATION = 0.1;
+    public static double CROSSING_POINT = 0.5;
 
     private int current_generation;
     private Graphe graphe;
@@ -133,5 +133,25 @@ public class TravellingSalesman {
 
     public Path getBestPath() {
         return fitness.get(fitness.size()-1);
+    }
+
+    public static void setMaxGeneration(int maxGeneration) {
+        MAX_GENERATION = maxGeneration;
+    }
+
+    public static void setPopulationSize(int populationSize) {
+        POPULATION_SIZE = populationSize;
+    }
+
+    public static void setPersentageRemplacement(double persentageRemplacement) {
+        PERSENTAGE_REMPLACEMENT = persentageRemplacement;
+    }
+
+    public static void setPersentageMutation(double persentageMutation) {
+        PERSENTAGE_MUTATION = persentageMutation;
+    }
+
+    public static void setCrossingPoint(double crossingPoint) {
+        CROSSING_POINT = crossingPoint;
     }
 }
