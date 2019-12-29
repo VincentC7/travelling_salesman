@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.SwingWorker;
+import javax.swing.plaf.basic.BasicMenuBarUI;
 
 @SuppressWarnings( "deprecation" )
 public class Windows extends JFrame implements Observer {
@@ -38,7 +39,28 @@ public class Windows extends JFrame implements Observer {
     public Windows(/*Observable o*/){
         //o.addObserver(this);
         GridBagConstraints c = new GridBagConstraints();
+
         this.setLayout(new GridBagLayout());
+
+        JMenuBar jmb = new JMenuBar();
+        jmb.setUI(new BasicMenuBarUI(){
+            @Override
+            public void paint(Graphics g, JComponent c) {
+                g.setColor(Color.GRAY);
+                g.fillRect(0,0,c.getWidth(),c.getHeight());
+                c.repaint();
+            }
+        });
+
+        JMenu jm = new JMenu("Fichier");
+        jm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser jf = new JFileChooser();
+            }
+        });
+        jmb.add(jm);
+        this.setJMenuBar(jmb);
         JPanel upperPanel = new JPanel();
         FlowLayout fl = new FlowLayout();
         upperPanel.setLayout(fl);
@@ -82,7 +104,7 @@ public class Windows extends JFrame implements Observer {
         c.gridheight =1;
         c.gridwidth = 3;
         c.gridx = 0;
-        c.gridy=0;
+        c.gridy=1;
 
         upperPanel.setBackground(Color.blue);
         this.add(upperPanel,c);
@@ -90,7 +112,7 @@ public class Windows extends JFrame implements Observer {
         c.gridheight =2;
         c.gridwidth = 3;
         c.gridx = 0;
-        c.gridy=1;
+        c.gridy=2;
         c.weighty=3;
         lowerPanel.setBackground(Color.BLACK);
         //this.chart = new XYChartBuilder().width(600).height(400).xAxisTitle("X").yAxisTitle("Y").build();
