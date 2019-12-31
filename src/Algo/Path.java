@@ -78,7 +78,7 @@ public class Path implements Comparable{
     public boolean equals(Object obj) {
         Path p = (Path)obj;
         for (int i = 0; i < this.cities.size(); i++){
-            if(!(p.cities.get(i).equals(this.cities.get(i)))){
+            if(!(p.cities.get(i).equals(cities.get(i)))){
                 return false;
             }
         }

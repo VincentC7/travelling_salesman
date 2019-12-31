@@ -14,6 +14,7 @@ public class TravellingSalesman extends Observable {
 
     private static int MAX_GENERATION = 150;
     private static int POPULATION_SIZE = 100;
+    public static int MAX_REPETITION_SAME_FITNESS = 10;
     private static double PERSENTAGE_REMPLACEMENT = 0.7;
     private static double PERSENTAGE_MUTATION = 0.1;
     public static double CROSSING_POINT = 0.5;
@@ -22,78 +23,88 @@ public class TravellingSalesman extends Observable {
     private Graphe graphe;
     private ArrayList<Path> population;
     private ArrayList<Path> fitness;
-    
-    public TravellingSalesman(){
-        current_generation=1;
+
+    public TravellingSalesman() {
+        current_generation = 1;
         graphe = Graphe.create_graphe("cities.json");
         assert graphe != null;
-        
-        population =new ArrayList<>();
+
+        population = new ArrayList<>();
         fitness = new ArrayList<>();
     }
 
-    public void runAlgo(){
+    public void runAlgo() {
         //creation des premiers chemins
         initialize();
 
         //creation des générations
-        while (current_generation != MAX_GENERATION){
+        while (current_generation != MAX_GENERATION && !is_same_fitness_since_n_gen()) {
             fitness.add(population.get(0));
             setChanged();
             notifyObservers();
 
-            System.out.println("====Generation : "+current_generation+"==========================================================================================================================================================================================");
-            System.out.println("Population au départ");
-            System.out.println(population);
-            System.out.println();
+            System.out.println("====Generation : " + current_generation + "==========================================================================================================================================================================================");
+            //System.out.println("Population au départ");
+            //System.out.println(population);
+            //System.out.println();
 
             ArrayList<Path> selected = selection();
-            System.out.println("individues sélectionnés");
-            System.out.println(selected);
-            System.out.println();
+            //System.out.println("individues sélectionnés");
+            //System.out.println(selected);
+            //System.out.println();
 
             ArrayList<Path> recomined_population = crossing_over(selected);
-            System.out.println("fils engendrés");
-            System.out.println(recomined_population);
-            System.out.println();
+            //System.out.println("fils engendrés");
+            //System.out.println(recomined_population);
+            //System.out.println();
 
             ArrayList<Path> muted_population = mutation(recomined_population);
-            System.out.println("fils mutés");
-            System.out.println(muted_population);
-            System.out.println();
+            //System.out.println("fils mutés");
+            //System.out.println(muted_population);
+            //System.out.println();
 
             remplacement(muted_population);
 
-            System.out.println("Nouvelle population");
-            System.out.println(population);
-            System.out.println();
+            //System.out.println("Nouvelle population");
+            //System.out.println(population);
+            //System.out.println();
 
-            System.out.println("Meilleur chemin");
+            System.out.println("Meilleur chemin de la génération "+current_generation);
             System.out.println(population.get(0));
             current_generation++;
         }
         setChanged();
         notifyObservers();
         System.out.println("##########Meilleur chemin##########");
-        System.out.println(fitness.get(fitness.size()-1));
-        System.out.println(fitness);
+        System.out.println(fitness.get(fitness.size() - 1));
+    }
+
+    private boolean is_same_fitness_since_n_gen(){
+        System.out.println(fitness.size());
+        if (MAX_REPETITION_SAME_FITNESS > fitness.size()) return false;
+        for (int i = 0; i<MAX_REPETITION_SAME_FITNESS-1; i++){
+            Path current = fitness.get(fitness.size()-i-1);
+            Path next = fitness.get(fitness.size()-i-2);
+            if (!current.equals(next)) return false;
+        }
+        return true;
     }
 
     //selection des k premiers individus
-    private ArrayList<Path> selection(){
+    private ArrayList<Path> selection() {
         ArrayList<Path> best_of_population = new ArrayList<>();
         DecimalFormat df = new DecimalFormat("#");
         df.setRoundingMode(RoundingMode.UP);
-        int k = Integer.parseInt(df.format((1+Math.sqrt(1+4*(POPULATION_SIZE*PERSENTAGE_REMPLACEMENT)))/2));
-        for (int i=0; i<k;i++) best_of_population.add(population.get(i));
+        int k = Integer.parseInt(df.format((1 + Math.sqrt(1 + 4 * (POPULATION_SIZE * PERSENTAGE_REMPLACEMENT))) / 2));
+        for (int i = 0; i < k; i++) best_of_population.add(population.get(i));
         return best_of_population;
     }
 
-    private ArrayList<Path> crossing_over(ArrayList<Path> selected){
+    private ArrayList<Path> crossing_over(ArrayList<Path> selected) {
         ArrayList<Path> recomined_population = new ArrayList<>();
         for (Path path1 : selected) {
             for (Path path2 : selected) {
-                if (path1!=path2){
+                if (path1 != path2) {
                     recomined_population.add(path1.createSon(path2));
                 }
             }
@@ -101,10 +112,10 @@ public class TravellingSalesman extends Observable {
         return recomined_population;
     }
 
-    private ArrayList<Path> mutation(ArrayList<Path> recombined_population){
+    private ArrayList<Path> mutation(ArrayList<Path> recombined_population) {
         for (Path path : recombined_population) {
             int rand = (int) (Math.random());
-            if (rand <= PERSENTAGE_MUTATION){ // rand <= 1 : mutation
+            if (rand <= PERSENTAGE_MUTATION) { // rand <= 1 : mutation
                 path.mutate();
             }
         }
@@ -112,17 +123,17 @@ public class TravellingSalesman extends Observable {
     }
 
     //remplacement partiel
-    private void remplacement(ArrayList<Path> mutated_population){
-        ArrayList<Path> new_population = new ArrayList<>(population.subList(0, (int) (POPULATION_SIZE*(1-PERSENTAGE_REMPLACEMENT)+1)));
+    private void remplacement(ArrayList<Path> mutated_population) {
+        ArrayList<Path> new_population = new ArrayList<>(population.subList(0, (int) (POPULATION_SIZE * (1 - PERSENTAGE_REMPLACEMENT) + 1)));
         new_population.addAll(mutated_population);
         setPopulation(new_population);
         Collections.sort(population);
     }
 
-    private void initialize(){
+    private void initialize() {
         List<City> cityList = new ArrayList<>(graphe.getCities());
-        for(int i = 0; i<POPULATION_SIZE; i++){
-           population.add(graphe.generatePath(cityList));
+        for (int i = 0; i < POPULATION_SIZE; i++) {
+            population.add(graphe.generatePath(cityList));
         }
         Collections.sort(population);
     }
@@ -138,7 +149,7 @@ public class TravellingSalesman extends Observable {
     }
 
     public Path getBestPath() {
-        return fitness.get(fitness.size()-1);
+        return fitness.get(fitness.size() - 1);
     }
 
     public static void setMaxGeneration(int maxGeneration) {
@@ -159,6 +170,10 @@ public class TravellingSalesman extends Observable {
 
     public static void setCrossingPoint(double crossingPoint) {
         CROSSING_POINT = crossingPoint;
+    }
+
+    public static void setMaxRepetitionSameFitness(int maxRepetitionSameFitness) {
+        MAX_REPETITION_SAME_FITNESS = maxRepetitionSameFitness;
     }
 
     public ArrayList<Path> getFitness() {
