@@ -12,8 +12,8 @@ import java.util.Observable;
 
 public class TravellingSalesman extends Observable {
 
-    private static int MAX_GENERATION = 1000;
-    private static int POPULATION_SIZE = 50;
+    private static int MAX_GENERATION = 150;
+    private static int POPULATION_SIZE = 100;
     private static double PERSENTAGE_REMPLACEMENT = 0.7;
     private static double PERSENTAGE_MUTATION = 0.1;
     public static double CROSSING_POINT = 0.5;
