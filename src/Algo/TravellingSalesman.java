@@ -42,33 +42,8 @@ public class TravellingSalesman extends Observable {
             fitness.add(population.get(0));
             setChanged();
             notifyObservers();
-
             System.out.println("====Generation : " + current_generation + "==========================================================================================================================================================================================");
-            //System.out.println("Population au départ");
-            //System.out.println(population);
-            //System.out.println();
-
-            ArrayList<Path> selected = selection();
-            //System.out.println("individues sélectionnés");
-            //System.out.println(selected);
-            //System.out.println();
-
-            ArrayList<Path> recomined_population = crossing_over(selected);
-            //System.out.println("fils engendrés");
-            //System.out.println(recomined_population);
-            //System.out.println();
-
-            ArrayList<Path> muted_population = mutation(recomined_population);
-            //System.out.println("fils mutés");
-            //System.out.println(muted_population);
-            //System.out.println();
-
-            remplacement(muted_population);
-
-            //System.out.println("Nouvelle population");
-            //System.out.println(population);
-            //System.out.println();
-
+            remplacement(mutation(crossing_over(selection())));
             System.out.println("Meilleur chemin de la génération "+current_generation);
             System.out.println(population.get(0));
             current_generation++;
@@ -80,7 +55,6 @@ public class TravellingSalesman extends Observable {
     }
 
     private boolean is_same_fitness_since_n_gen(){
-        System.out.println(fitness.size());
         if (MAX_REPETITION_SAME_FITNESS > fitness.size()) return false;
         for (int i = 0; i<MAX_REPETITION_SAME_FITNESS-1; i++){
             Path current = fitness.get(fitness.size()-i-1);
