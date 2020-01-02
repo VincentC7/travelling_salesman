@@ -14,8 +14,8 @@ import java.util.*;
 public class Graphe {
     private HashSet<City> cities;
     private City city_start;
-    static int MAX_LENGTH = 5000;
-    static int MIN_LENGTH = 10;
+    static int MAX_LENGTH = 500;
+    static int MIN_LENGTH = 100;
 
     Graphe(HashSet<City> p_cities, City p_city_start){
         cities = p_cities;

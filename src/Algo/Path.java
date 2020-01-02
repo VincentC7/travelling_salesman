@@ -43,7 +43,7 @@ public class Path implements Comparable{
         for (City city : cross_part) {
             new_path.remove(city);
         }
-        Collections.shuffle(cross_part);
+        //Collections.shuffle(cross_part);
         new_path.addAll(cross_part);
         new_path.add(0,start);
         new_path.add(new_path.size(),start);
@@ -78,7 +78,7 @@ public class Path implements Comparable{
     public boolean equals(Object obj) {
         Path p = (Path)obj;
         for (int i = 0; i < this.cities.size(); i++){
-            if(!(p.cities.get(i).equals(this.cities.get(i)))){
+            if(!(p.cities.get(i).equals(cities.get(i)))){
                 return false;
             }
         }
