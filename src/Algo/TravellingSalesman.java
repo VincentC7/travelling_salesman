@@ -5,11 +5,9 @@ import Structure_Donnees.Graphe;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Observable;
+import java.util.*;
 
+@SuppressWarnings( "deprecation" )
 public class TravellingSalesman extends Observable {
 
     private static int MAX_GENERATION = 1000;
@@ -18,6 +16,7 @@ public class TravellingSalesman extends Observable {
     private static double PERSENTAGE_MUTATION = 0.1;
     public static double CROSSING_POINT = 0.5;
 
+    private boolean stopped = false;
     private int current_generation;
     private Graphe graphe;
     private ArrayList<Path> population;
@@ -27,7 +26,18 @@ public class TravellingSalesman extends Observable {
         current_generation=1;
         graphe = Graphe.create_graphe("cities.json");
         assert graphe != null;
-        
+
+        population =new ArrayList<>();
+        fitness = new ArrayList<>();
+
+
+    }
+
+    public TravellingSalesman(String fichier){
+        current_generation=1;
+        graphe = Graphe.create_graphe(fichier);
+        assert graphe != null;
+
         population =new ArrayList<>();
         fitness = new ArrayList<>();
     }
@@ -37,39 +47,47 @@ public class TravellingSalesman extends Observable {
         initialize();
 
         //creation des générations
-        while (current_generation != MAX_GENERATION){
+        while (current_generation != MAX_GENERATION && !stopped){
             fitness.add(population.get(0));
             setChanged();
             notifyObservers();
-
+/**
             System.out.println("====Generation : "+current_generation+"==========================================================================================================================================================================================");
             System.out.println("Population au départ");
             System.out.println(population);
-            System.out.println();
+            System.out.println();**/
 
             ArrayList<Path> selected = selection();
+            /**
             System.out.println("individues sélectionnés");
             System.out.println(selected);
             System.out.println();
-
+**/
             ArrayList<Path> recomined_population = crossing_over(selected);
+            /**
             System.out.println("fils engendrés");
             System.out.println(recomined_population);
-            System.out.println();
+            System.out.println();**/
 
             ArrayList<Path> muted_population = mutation(recomined_population);
+            /**
             System.out.println("fils mutés");
             System.out.println(muted_population);
-            System.out.println();
+            System.out.println();**/
 
             remplacement(muted_population);
-
+/**
             System.out.println("Nouvelle population");
             System.out.println(population);
             System.out.println();
 
             System.out.println("Meilleur chemin");
-            System.out.println(population.get(0));
+            System.out.println(population.get(0));**/
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             current_generation++;
         }
         setChanged();
@@ -168,4 +186,23 @@ public class TravellingSalesman extends Observable {
     public int getCurrent_generation() {
         return current_generation;
     }
+
+    public void stop(){
+        this.stopped = true;
+    }
+
+    public HashSet<City> getCities(){
+        return graphe.getCities();
+    }
+
+    public City getCityStart(){
+        return graphe.getCity_start();
+    }
+
+    public void setCity_start(City c){
+        graphe.setCity_start(c);
+    }
+
+
+
 }

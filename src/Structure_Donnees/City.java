@@ -48,11 +48,7 @@ public class City {
 
     @Override
     public String toString() {
-        String s = name + "\n";
-        for (City c : neighbours.keySet()){
-             s += c.getName() + " : " + neighbours.get(c) + "\n";
-        }
-        return s+"\n";
+        return name;
 
     }
 }

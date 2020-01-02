@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class Graphe {
-    private static HashSet<City> cities;
+    private HashSet<City> cities;
     private City city_start;
     static int MAX_LENGTH = 5000;
     static int MIN_LENGTH = 10;
@@ -151,6 +151,8 @@ public class Graphe {
     }
 
     public void setCity_start(City city_start) {
+        cities.remove(city_start);
+        cities.add(this.city_start);
         this.city_start = city_start;
     }
 

@@ -2,14 +2,12 @@ package GUI;
 
 import Algo.Path;
 import Algo.TravellingSalesman;
+import Structure_Donnees.City;
 import org.knowm.xchart.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -18,6 +16,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.stream.Collectors;
 import javax.swing.SwingWorker;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicMenuBarUI;
 
 @SuppressWarnings( "deprecation" )
@@ -25,85 +24,168 @@ public class Windows extends JFrame implements Observer {
 
     XYChartPanelTS xchart;
     TravellingSalesman travellingSaleman;
+    Windows parent;
+    JButton begin,stop;
+    ArrayList<JComponent> components;
+    Thread running;
+    JComboBox<City> cities;
+
     /**
-     *laissé à l'utilisateur du fichier des villes / distances grâce à, par exemple, une boîte de dialogue
-     *laissé à l'utilisateur de la ville de départ (et/ou de retour) dans l'interface graphique depuis les
-     *     villes du fichier
-     *Configuration de la probabilité de mutation
-     *Configuration de la taille de la population
      *Configuration de la condition du critère d'arrêt (par exemple, si vous choisissez un nombre de générations maximal,
      *     laissez l'utilisateur choisir ce maximum)
      *Configuration de l'algorithme de remplacement : si vous avez choisi un remplacement partiel, laissez l'utilisateur donner
      *     la proportion d'individus de l'ancienne génération qui seront conservés
-     *Mise en place du multithreading : à vous de proposer une (ou plusieurs) stratégie(s) de multithreading dans le
-     *     cadre de ce problème. N'hésitez pas à en discuter avec vos enseignants.
      */
 
 
 
     public Windows(/*Observable o*/){
         //o.addObserver(this);
+        ItemListener il =new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED ){
+                    travellingSaleman.setCity_start((City)e.getItem());
+                }
+            }
+        };
+        components = new ArrayList<>();
+        parent = this;
         GridBagConstraints c = new GridBagConstraints();
-        travellingSaleman = new TravellingSalesman();
-        travellingSaleman.addObserver(this);
+
         this.setLayout(new GridBagLayout());
 
         JMenuBar jmb = new JMenuBar();
-        jmb.setUI(new BasicMenuBarUI(){
+
+        JMenu jm = new JMenu("Fichier");
+        JMenuItem jmi = new JMenuItem("Ouvrir");
+
+        jmi.addActionListener(new ActionListener() {
             @Override
-            public void paint(Graphics g, JComponent c) {
-                g.setColor(Color.GRAY);
-                g.fillRect(0,0,c.getWidth(),c.getHeight());
-                c.repaint();
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser choix = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Json","json");
+                choix.setFileFilter(filter);
+
+                int returnVal = choix.showOpenDialog(null);
+                if(returnVal == JFileChooser.APPROVE_OPTION){
+                    travellingSaleman = new TravellingSalesman(choix.getSelectedFile().getAbsolutePath());
+
+                    travellingSaleman.addObserver(Windows.this);
+                    for(JComponent comp : components){
+                        comp.setEnabled(true);
+                    }
+                    cities.addItem(travellingSaleman.getCityStart());
+                    for(City city : travellingSaleman.getCities()){
+                        cities.addItem(city);
+                    }
+                    cities.setSelectedItem(travellingSaleman.getCityStart());
+                    cities.addItemListener(il);
+                }
+
+            }
+        });
+        JMenuItem jmi2 = new JMenuItem("Créer");
+
+        jmi2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                travellingSaleman = new TravellingSalesman();
+
+                travellingSaleman.addObserver(Windows.this);
+                for(JComponent comp : components){
+                    comp.setEnabled(true);
+                }
+                cities.addItem(travellingSaleman.getCityStart());
+                for(City city : travellingSaleman.getCities()){
+                    cities.addItem(city);
+                }
+                cities.setSelectedItem(travellingSaleman.getCityStart());
+                cities.addItemListener(il);
             }
         });
 
-        JMenu jm = new JMenu("Fichier");
-        jm.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser jf = new JFileChooser();
-            }
-        });
+        jm.add(jmi);
+        jm.add(jmi2);
         jmb.add(jm);
         this.setJMenuBar(jmb);
         JPanel upperPanel = new JPanel();
-        FlowLayout fl = new FlowLayout();
-        upperPanel.setLayout(fl);
+        GridLayout gl = new GridLayout(0,1);
+        upperPanel.setLayout(gl);
+
+        JPanel firstPart = new JPanel();
+        JPanel secondPart = new JPanel();
+        FlowLayout fl1 = new FlowLayout();
+        firstPart.setLayout(fl1);
+        FlowLayout fl2 = new FlowLayout();
+        secondPart.setLayout(fl2);
+
+
         JLabel jlabel1 = new JLabel("Probabilité mutation");
         JTextField jtext1 = new JTextField(4);
         jtext1.addFocusListener(new FocusListenerMutator(2));
 
         JLabel jlabel2 = new JLabel("Taille de la population");
         JTextField jtext2 = new JTextField(5);
-        JButton jb = new JButton("test");
-        jb.addActionListener(new ActionListener() {
-            int compteur = 1;
-            ArrayList<Double> arraytemp = new ArrayList<>();
+        begin = new JButton("commencer");
+        begin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Thread(() -> {
+                running = new Thread(() -> {
+                    try {/**
+                        TravellingSalesman.setPersentageMutation(Double.parseDouble(jtext1.getText()));
+                        TravellingSalesman.setPopulationSize(Integer.parseInt(jtext2.getText()));**/
+                        travellingSaleman.runAlgo();
+                    }
+                    catch (NumberFormatException ex){
+                        JOptionPane.showMessageDialog(Windows.this,"Une case est vide ou bien vous n'avez pas renter un nombre");
+                    }
 
-                    travellingSaleman.runAlgo();
-                }).start();
+                });
+                running.start();
 
 
             }
         });
-        upperPanel.add(jlabel1);
-        upperPanel.add(jtext1);
-        upperPanel.add(jlabel2);
-        upperPanel.add(jtext2);
-        upperPanel.add(jb);
+        stop = new JButton("Fin");
+        stop.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!(running.isInterrupted())) {
+                    running.interrupt();
+                    travellingSaleman.stop();
+                    travellingSaleman = null;
+                    System.out.println(travellingSaleman);
+                    for(JComponent comp : components){
+                        comp.setEnabled(false);
+                    }
+                }
+            }
+        });
+        JLabel jlabel3 = new JLabel("Ville départ");
+        cities = new JComboBox<>();
+
+        firstPart.add(jlabel1);
+        firstPart.add(jtext1);
+        firstPart.add(jlabel2);
+        firstPart.add(jtext2);
+        firstPart.add(begin);
+        firstPart.add(stop);
+        secondPart.add(jlabel3);
+        secondPart.add(cities);
+        upperPanel.add(firstPart);
+        upperPanel.add(secondPart);
+        components.add(jtext1);
+        components.add(jtext2);
+        components.add(begin);
+
         c.weightx=1;
-        c.weighty=1;
+        c.weighty=0.5;
         c.fill = GridBagConstraints.BOTH;
         c.gridheight =1;
         c.gridwidth = 3;
         c.gridx = 0;
         c.gridy=1;
-
-        upperPanel.setBackground(Color.blue);
         this.add(upperPanel,c);
         JPanel lowerPanel = new JPanel();
         c.gridheight =2;
@@ -111,13 +193,12 @@ public class Windows extends JFrame implements Observer {
         c.gridx = 0;
         c.gridy=2;
         c.weighty=3;
-        lowerPanel.setBackground(Color.BLACK);
-        //this.chart = new XYChartBuilder().width(600).height(400).xAxisTitle("X").yAxisTitle("Y").build();
-        //chart.addSeries("Fitness",new double [] { 0 },new double [] { 0 });
-        //this.xchart = new XYChartPanelTS(chart);
         this.xchart = new XYChartPanelTS("X","Y","Fitness",800,400);
         lowerPanel.add(xchart);
         this.add(lowerPanel,c);
+        for(JComponent comp : components){
+            comp.setEnabled(false);
+        }
         this.setTitle("Travelling Saleman");
         this.setLocationRelativeTo(null);
         this.setMinimumSize(new Dimension(800,600));
