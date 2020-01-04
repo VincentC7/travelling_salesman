@@ -127,14 +127,22 @@ public class Windows extends JFrame implements Observer {
 
         JLabel jlabel2 = new JLabel("Taille de la population");
         JTextField jtext2 = new JTextField(5);
+
+        JLabel jlabel5 = new JLabel("Proportion conservée");
+        JTextField jtext3 = new JTextField(4);
+        jtext1.addFocusListener(new FocusListenerMutator(2));
+
         begin = new JButton("commencer");
+
+
         begin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 running = new Thread(() -> {
-                    try {/**
+                    try {
                         TravellingSalesman.setPersentageMutation(Double.parseDouble(jtext1.getText()));
-                        TravellingSalesman.setPopulationSize(Integer.parseInt(jtext2.getText()));**/
+                        TravellingSalesman.setPopulationSize(Integer.parseInt(jtext2.getText()));
+                        TravellingSalesman.setPersentageRemplacement(Double.parseDouble(jtext3.getText()));
                         travellingSaleman.runAlgo();
                     }
                     catch (NumberFormatException ex){
@@ -164,6 +172,19 @@ public class Windows extends JFrame implements Observer {
         });
         JLabel jlabel3 = new JLabel("Ville départ");
         cities = new JComboBox<>();
+        JLabel jlabel4 = new JLabel("Type Remplacement");
+        JComboBox<String> remplacement = new JComboBox<>();
+        remplacement.addItem("Partiel");
+        remplacement.addItem("Total");
+        remplacement.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED ){
+                    //TODO
+                }
+            }
+        });
+
 
         firstPart.add(jlabel1);
         firstPart.add(jtext1);
@@ -173,10 +194,17 @@ public class Windows extends JFrame implements Observer {
         firstPart.add(stop);
         secondPart.add(jlabel3);
         secondPart.add(cities);
+
+        secondPart.add(jlabel4);
+        secondPart.add(remplacement);
+        secondPart.add(jlabel5);
+        secondPart.add(jtext3);
         upperPanel.add(firstPart);
         upperPanel.add(secondPart);
+
         components.add(jtext1);
         components.add(jtext2);
+        components.add(jtext3);
         components.add(begin);
 
         c.weightx=1;

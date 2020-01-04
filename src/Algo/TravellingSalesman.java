@@ -10,9 +10,9 @@ import java.util.*;
 @SuppressWarnings( "deprecation" )
 public class TravellingSalesman extends Observable {
 
-    private static int MAX_GENERATION = 150;
+    private static int MAX_GENERATION = 1000;
     private static int POPULATION_SIZE = 100;
-    public static int MAX_REPETITION_SAME_FITNESS = 10;
+    public static int MAX_REPETITION_SAME_FITNESS = 1000;
     private static double PERSENTAGE_REMPLACEMENT = 0.7;
     private static double PERSENTAGE_MUTATION = 0.1;
     public static double CROSSING_POINT = 0.5;
