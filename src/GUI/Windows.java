@@ -141,11 +141,17 @@ public class Windows extends JFrame implements Observer {
             public void actionPerformed(ActionEvent e) {
                 running = new Thread(() -> {
                     try {
+                        xchart.addData("Fitness",new double []{ 0 },1);
                         jm.setEnabled(false);
                         TravellingSalesman.setPersentageMutation(Double.parseDouble(jtext1.getText()));
                         TravellingSalesman.setPopulationSize(Integer.parseInt(jtext2.getText()));
                         TravellingSalesman.setPersentageRemplacement(Double.parseDouble(jtext3.getText()));
                         travellingSaleman.runAlgo();
+                        travellingSaleman = null;
+                        for(JComponent comp : components){
+                            comp.setEnabled(false);
+                        }
+                        jm.setEnabled(true);
 
                     }
                     catch (NumberFormatException ex){
@@ -167,11 +173,9 @@ public class Windows extends JFrame implements Observer {
                     running.interrupt();
                     travellingSaleman.stop();
                     travellingSaleman = null;
-                    System.out.println(travellingSaleman);
                     for(JComponent comp : components){
                         comp.setEnabled(false);
                     }
-                    xchart.addData("Fitness",new double []{ 0 },1);
                     jm.setEnabled(true);
                 }
             }
@@ -192,7 +196,7 @@ public class Windows extends JFrame implements Observer {
         });
         JLabel jlabel6 = new JLabel("Type de selection");
         types = new JComboBox<>();
-        types.addItem("Normal");
+        types.addItem("k meilleur");
         types.addItem("Tournoi");
         types.addItemListener(new ItemListener() {
             @Override
@@ -203,13 +207,21 @@ public class Windows extends JFrame implements Observer {
                         remplacement.setEnabled(false);
                         remplacement.setEnabled(false);
                     }
-                    else if(s.equals("Normal")){
+                    else if(s.equals("k meilleur")){
                         remplacement.setEnabled(true);
                         jtext3.setEnabled(true);
                     }
                 }
             }
         });
+
+        JPanel thirdPart = new JPanel();
+        FlowLayout fl3 = new FlowLayout();
+        thirdPart.setLayout(fl3);
+        JLabel jlabel7 = new JLabel("Nombre de generation max");
+        JTextField jtext7 = new JTextField(5);
+        JLabel jlabel8 = new JLabel("Generation avec la meme fitness");
+        JTextField jtext8 = new JTextField(5);
 
 
         firstPart.add(jlabel1);
@@ -228,9 +240,15 @@ public class Windows extends JFrame implements Observer {
         secondPart.add(jlabel6);
         secondPart.add(types);
 
+        thirdPart.add(jlabel7);
+        thirdPart.add(jtext7);
+        thirdPart.add(jlabel8);
+        thirdPart.add(jtext8);
+
 
         upperPanel.add(firstPart);
         upperPanel.add(secondPart);
+        upperPanel.add(thirdPart);
 
         components.add(jtext1);
         components.add(jtext2);
@@ -238,6 +256,8 @@ public class Windows extends JFrame implements Observer {
         components.add(begin);
         components.add(remplacement);
         components.add(types);
+        components.add(jtext7);
+        components.add(jtext8);
 
         c.weightx=1;
         c.weighty=0.5;
@@ -261,7 +281,7 @@ public class Windows extends JFrame implements Observer {
         }
         this.setTitle("Travelling Saleman");
         this.setLocationRelativeTo(null);
-        this.setMinimumSize(new Dimension(1000,600));
+        this.setMinimumSize(new Dimension(1000,700));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }
