@@ -29,6 +29,7 @@ public class Windows extends JFrame implements Observer {
     ArrayList<JComponent> components;
     Thread running;
     JComboBox<City> cities;
+    JComboBox<String> remplacement,types;
 
     /**
      *Configuration de la condition du critère d'arrêt (par exemple, si vous choisissez un nombre de générations maximal,
@@ -140,10 +141,12 @@ public class Windows extends JFrame implements Observer {
             public void actionPerformed(ActionEvent e) {
                 running = new Thread(() -> {
                     try {
+                        jm.setEnabled(false);
                         TravellingSalesman.setPersentageMutation(Double.parseDouble(jtext1.getText()));
                         TravellingSalesman.setPopulationSize(Integer.parseInt(jtext2.getText()));
                         TravellingSalesman.setPersentageRemplacement(Double.parseDouble(jtext3.getText()));
                         travellingSaleman.runAlgo();
+
                     }
                     catch (NumberFormatException ex){
                         JOptionPane.showMessageDialog(Windows.this,"Une case est vide ou bien vous n'avez pas renter un nombre");
@@ -160,6 +163,7 @@ public class Windows extends JFrame implements Observer {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(!(running.isInterrupted())) {
+
                     running.interrupt();
                     travellingSaleman.stop();
                     travellingSaleman = null;
@@ -167,13 +171,15 @@ public class Windows extends JFrame implements Observer {
                     for(JComponent comp : components){
                         comp.setEnabled(false);
                     }
+                    xchart.addData("Fitness",new double []{ 0 },1);
+                    jm.setEnabled(true);
                 }
             }
         });
         JLabel jlabel3 = new JLabel("Ville départ");
         cities = new JComboBox<>();
         JLabel jlabel4 = new JLabel("Type Remplacement");
-        JComboBox<String> remplacement = new JComboBox<>();
+        remplacement = new JComboBox<>();
         remplacement.addItem("Partiel");
         remplacement.addItem("Total");
         remplacement.addItemListener(new ItemListener() {
@@ -184,12 +190,34 @@ public class Windows extends JFrame implements Observer {
                 }
             }
         });
+        JLabel jlabel6 = new JLabel("Type de selection");
+        types = new JComboBox<>();
+        types.addItem("Normal");
+        types.addItem("Tournoi");
+        types.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED ){
+                    String s = (String)e.getItem();
+                    if(s.equals("Tournoi")){
+                        remplacement.setEnabled(false);
+                        remplacement.setEnabled(false);
+                    }
+                    else if(s.equals("Normal")){
+                        remplacement.setEnabled(true);
+                        jtext3.setEnabled(true);
+                    }
+                }
+            }
+        });
 
 
         firstPart.add(jlabel1);
         firstPart.add(jtext1);
         firstPart.add(jlabel2);
         firstPart.add(jtext2);
+        firstPart.add(jlabel5);
+        firstPart.add(jtext3);
         firstPart.add(begin);
         firstPart.add(stop);
         secondPart.add(jlabel3);
@@ -197,8 +225,10 @@ public class Windows extends JFrame implements Observer {
 
         secondPart.add(jlabel4);
         secondPart.add(remplacement);
-        secondPart.add(jlabel5);
-        secondPart.add(jtext3);
+        secondPart.add(jlabel6);
+        secondPart.add(types);
+
+
         upperPanel.add(firstPart);
         upperPanel.add(secondPart);
 
@@ -206,6 +236,8 @@ public class Windows extends JFrame implements Observer {
         components.add(jtext2);
         components.add(jtext3);
         components.add(begin);
+        components.add(remplacement);
+        components.add(types);
 
         c.weightx=1;
         c.weighty=0.5;
@@ -221,7 +253,7 @@ public class Windows extends JFrame implements Observer {
         c.gridx = 0;
         c.gridy=2;
         c.weighty=3;
-        this.xchart = new XYChartPanelTS("X","Y","Fitness",800,400);
+        this.xchart = new XYChartPanelTS("X","Y","Fitness",1000,400);
         lowerPanel.add(xchart);
         this.add(lowerPanel,c);
         for(JComponent comp : components){
@@ -229,7 +261,7 @@ public class Windows extends JFrame implements Observer {
         }
         this.setTitle("Travelling Saleman");
         this.setLocationRelativeTo(null);
-        this.setMinimumSize(new Dimension(800,600));
+        this.setMinimumSize(new Dimension(1000,600));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }

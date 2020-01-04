@@ -58,6 +58,7 @@ public class TravellingSalesman extends Observable {
             System.out.println(population.get(0));
             current_generation++;
         }
+        fitness.add(population.get(0));
         setChanged();
         notifyObservers();
         System.out.println("##########Meilleur chemin##########");
