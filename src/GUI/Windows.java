@@ -133,6 +133,12 @@ public class Windows extends JFrame implements Observer {
         JTextField jtext3 = new JTextField(4);
         jtext1.addFocusListener(new FocusListenerMutator(2));
 
+        JLabel jlabel7 = new JLabel("Nombre de generation max");
+        JTextField jtext7 = new JTextField(5);
+
+        JLabel jlabel8 = new JLabel("Max Generation meme fitness");
+        JTextField jtext8 = new JTextField(5);
+
         begin = new JButton("commencer");
 
 
@@ -145,7 +151,10 @@ public class Windows extends JFrame implements Observer {
                         jm.setEnabled(false);
                         TravellingSalesman.setPersentageMutation(Double.parseDouble(jtext1.getText()));
                         TravellingSalesman.setPopulationSize(Integer.parseInt(jtext2.getText()));
-                        TravellingSalesman.setPersentageRemplacement(Double.parseDouble(jtext3.getText()));
+                        if (jtext3.isEnabled()) TravellingSalesman.setPersentageRemplacement(Double.parseDouble(jtext3.getText()));
+                        travellingSaleman.setReplacementTotal(remplacement.getSelectedItem().equals("Total"));
+                        TravellingSalesman.setMaxRepetitionSameFitness(Integer.parseInt(jtext8.getText()));
+                        TravellingSalesman.setMaxGeneration(Integer.parseInt(jtext7.getText()));
                         travellingSaleman.runAlgo();
                         travellingSaleman = null;
                         for(JComponent comp : components){
@@ -168,7 +177,7 @@ public class Windows extends JFrame implements Observer {
         stop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!(running.isInterrupted())) {
+                if(!(running.isInterrupted()) && travellingSaleman != null) {
 
                     running.interrupt();
                     travellingSaleman.stop();
@@ -190,7 +199,13 @@ public class Windows extends JFrame implements Observer {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if(e.getStateChange() == ItemEvent.SELECTED ){
-                    //TODO
+                    String s = (String)e.getItem();
+                    if(s.equals("Partiel")){
+                        jtext3.setEnabled(true);
+                    }
+                    else{
+                        jtext3.setEnabled(false);
+                    }
                 }
             }
         });
@@ -205,7 +220,7 @@ public class Windows extends JFrame implements Observer {
                     String s = (String)e.getItem();
                     if(s.equals("Tournoi")){
                         remplacement.setEnabled(false);
-                        remplacement.setEnabled(false);
+                        jtext3.setEnabled(false);
                     }
                     else if(s.equals("k meilleur")){
                         remplacement.setEnabled(true);
@@ -218,10 +233,7 @@ public class Windows extends JFrame implements Observer {
         JPanel thirdPart = new JPanel();
         FlowLayout fl3 = new FlowLayout();
         thirdPart.setLayout(fl3);
-        JLabel jlabel7 = new JLabel("Nombre de generation max");
-        JTextField jtext7 = new JTextField(5);
-        JLabel jlabel8 = new JLabel("Generation avec la meme fitness");
-        JTextField jtext8 = new JTextField(5);
+
 
 
         firstPart.add(jlabel1);
@@ -258,6 +270,7 @@ public class Windows extends JFrame implements Observer {
         components.add(types);
         components.add(jtext7);
         components.add(jtext8);
+        components.add(cities);
 
         c.weightx=1;
         c.weighty=0.5;

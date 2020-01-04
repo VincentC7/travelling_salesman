@@ -18,6 +18,7 @@ public class TravellingSalesman extends Observable {
     public static double CROSSING_POINT = 0.5;
 
     private boolean stopped = false;
+    private boolean replacementTotal=false;
     private int current_generation;
     private Graphe graphe;
     private ArrayList<Path> population;
@@ -53,6 +54,8 @@ public class TravellingSalesman extends Observable {
             System.out.println("====Generation : " + current_generation + "==========================================================================================================================================================================================");
             remplacement(mutation(crossing_over(selection())));
             System.out.println("Meilleur chemin de la génération "+current_generation);
+            System.out.println(population.size());
+            System.out.println(replacementTotal);
             System.out.println(population.get(0));
             current_generation++;
         }
@@ -78,7 +81,7 @@ public class TravellingSalesman extends Observable {
         ArrayList<Path> best_of_population = new ArrayList<>();
         DecimalFormat df = new DecimalFormat("#");
         df.setRoundingMode(RoundingMode.UP);
-        int k = Integer.parseInt(df.format((1 + Math.sqrt(1 + 4 * (POPULATION_SIZE * PERSENTAGE_REMPLACEMENT))) / 2));
+        int k = (replacementTotal) ? Integer.parseInt(df.format((1 + Math.sqrt(1 + 4 * (POPULATION_SIZE))) / 2)) : Integer.parseInt(df.format((1 + Math.sqrt(1 + 4 * (POPULATION_SIZE * PERSENTAGE_REMPLACEMENT))) / 2));
         for (int i = 0; i < k; i++) best_of_population.add(population.get(i));
         return best_of_population;
     }
@@ -107,9 +110,16 @@ public class TravellingSalesman extends Observable {
 
     //remplacement partiel
     private void remplacement(ArrayList<Path> mutated_population) {
-        ArrayList<Path> new_population = new ArrayList<>(population.subList(0, (int) (POPULATION_SIZE * (1 - PERSENTAGE_REMPLACEMENT) + 1)));
-        new_population.addAll(mutated_population);
-        setPopulation(new_population);
+        if(!(this.replacementTotal)){
+            ArrayList<Path> new_population = new ArrayList<>(population.subList(0, (int) (POPULATION_SIZE * (1 - PERSENTAGE_REMPLACEMENT) + 1)));
+            new_population.addAll(mutated_population.subList(0,POPULATION_SIZE-new_population.size()));
+            setPopulation(new_population);
+
+        }
+        else{
+            setPopulation(new ArrayList<>(mutated_population.subList(0,POPULATION_SIZE)));
+        }
+
         Collections.sort(population);
     }
 
@@ -184,5 +194,7 @@ public class TravellingSalesman extends Observable {
     }
 
 
-
+    public void setReplacementTotal(boolean raplaclementTotal) {
+        this.replacementTotal = raplaclementTotal;
+    }
 }
