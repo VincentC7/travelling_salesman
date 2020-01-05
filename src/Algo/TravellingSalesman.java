@@ -3,27 +3,32 @@ package Algo;
 import Structure_Donnees.City;
 import Structure_Donnees.Graphe;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.*;
 
 @SuppressWarnings( "deprecation" )
 public class TravellingSalesman extends Observable {
 
-    private static int MAX_GENERATION = 1000;
-    private static int POPULATION_SIZE = 100;
+    /**
+     * Paramètres de l'algo
+     */
+    private static int MAX_GENERATION = 100;
+    public static int POPULATION_SIZE = 100;
     public static int MAX_REPETITION_SAME_FITNESS = 10;
-    private static double PERSENTAGE_REMPLACEMENT = 0.7;
+    public static double PERSENTAGE_REMPLACEMENT = 0.7;
     private static double PERSENTAGE_MUTATION = 0.1;
     public static double CROSSING_POINT = 0.5;
-
-    private boolean stopped = false;
     private boolean replacementTotal=false;
+    private Selection selector;
+
+    /**
+     * Données en interne
+     */
+    private boolean stopped = false;
     private int current_generation;
     private Graphe graphe;
     private ArrayList<Path> population;
     private ArrayList<Path> fitness;
-    
+
     public TravellingSalesman(){
         current_generation=1;
         graphe = Graphe.create_graphe("cities.json");
@@ -31,6 +36,7 @@ public class TravellingSalesman extends Observable {
 
         population =new ArrayList<>();
         fitness = new ArrayList<>();
+        selector = new KBestSelection();
     }
 
     public TravellingSalesman(String fichier){
@@ -55,8 +61,6 @@ public class TravellingSalesman extends Observable {
             System.out.println("====Generation : " + current_generation + "==========================================================================================================================================================================================");
             remplacement(mutation(crossing_over(selection())));
             System.out.println("Meilleur chemin de la génération "+current_generation);
-            System.out.println(population.size());
-            System.out.println(replacementTotal);
             System.out.println(population.get(0));
             current_generation++;
         }
@@ -77,14 +81,8 @@ public class TravellingSalesman extends Observable {
         return true;
     }
 
-    //selection des k premiers individus
     private ArrayList<Path> selection() {
-        ArrayList<Path> best_of_population = new ArrayList<>();
-        DecimalFormat df = new DecimalFormat("#");
-        df.setRoundingMode(RoundingMode.UP);
-        int k = (replacementTotal) ? Integer.parseInt(df.format((1 + Math.sqrt(1 + 4 * (POPULATION_SIZE))) / 2)) : Integer.parseInt(df.format((1 + Math.sqrt(1 + 4 * (POPULATION_SIZE * PERSENTAGE_REMPLACEMENT))) / 2));
-        for (int i = 0; i < k; i++) best_of_population.add(population.get(i));
-        return best_of_population;
+        return selector.getSelectedPoppulation(population,replacementTotal);
     }
 
     private ArrayList<Path> crossing_over(ArrayList<Path> selected) {
@@ -109,7 +107,6 @@ public class TravellingSalesman extends Observable {
         return recombined_population;
     }
 
-    //remplacement partiel
     private void remplacement(ArrayList<Path> mutated_population) {
         if(!(this.replacementTotal)){
             ArrayList<Path> new_population = new ArrayList<>(population.subList(0, (int) (POPULATION_SIZE * (1 - PERSENTAGE_REMPLACEMENT) + 1)));
@@ -134,16 +131,8 @@ public class TravellingSalesman extends Observable {
 
     //================================================================== Getter / Setter =====================================================================================
 
-    public ArrayList<Path> getPopulation() {
-        return population;
-    }
-
     public void setPopulation(ArrayList<Path> population) {
         this.population = population;
-    }
-
-    public Path getBestPath() {
-        return fitness.get(fitness.size() - 1);
     }
 
     public static void setMaxGeneration(int maxGeneration) {
@@ -168,6 +157,15 @@ public class TravellingSalesman extends Observable {
 
     public static void setMaxRepetitionSameFitness(int maxRepetitionSameFitness) {
         MAX_REPETITION_SAME_FITNESS = maxRepetitionSameFitness;
+    }
+
+    public void setSelector(Selection selector) {
+        this.selector = selector;
+        System.out.println(selector);
+    }
+
+    public ArrayList<Path> getPopulation() {
+        return population;
     }
 
     public ArrayList<Path> getFitness() {
@@ -198,4 +196,6 @@ public class TravellingSalesman extends Observable {
     public void setReplacementTotal(boolean raplaclementTotal) {
         this.replacementTotal = raplaclementTotal;
     }
+
+
 }

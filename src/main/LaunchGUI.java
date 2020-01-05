@@ -1,4 +1,6 @@
-package GUI;
+package main;
+
+import GUI.Windows;
 
 public class LaunchGUI {
 
