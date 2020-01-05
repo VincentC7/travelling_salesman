@@ -1,6 +1,8 @@
 package GUI;
 
+import Algo.KBestSelection;
 import Algo.Path;
+import Algo.TournamentSelection;
 import Algo.TravellingSalesman;
 import Structure_Donnees.City;
 
@@ -208,19 +210,14 @@ public class Windows extends JFrame implements Observer {
         types = new JComboBox<>();
         types.addItem("k meilleur");
         types.addItem("Tournoi");
-        types.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == ItemEvent.SELECTED ){
-                    String s = (String)e.getItem();
-                    if(s.equals("Tournoi")){
-                        remplacement.setEnabled(false);
-                        jtext3.setEnabled(false);
-                    }
-                    else if(s.equals("k meilleur")){
-                        remplacement.setEnabled(true);
-                        jtext3.setEnabled(true);
-                    }
+        types.addItemListener(e -> {
+            if(e.getStateChange() == ItemEvent.SELECTED ){
+                String s = (String)e.getItem();
+                if(s.equals("Tournoi")){
+                    travellingSaleman.setSelector(new TournamentSelection());
+                }
+                else if(s.equals("k meilleur")){
+                    travellingSaleman.setSelector(new KBestSelection());
                 }
             }
         });

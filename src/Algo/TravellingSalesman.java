@@ -18,6 +18,7 @@ public class TravellingSalesman extends Observable {
     private static double PERSENTAGE_MUTATION = 0.1;
     public static double CROSSING_POINT = 0.5;
     private boolean replacementTotal=false;
+    private Selection selector;
 
     /**
      * Données en interne
@@ -27,8 +28,7 @@ public class TravellingSalesman extends Observable {
     private Graphe graphe;
     private ArrayList<Path> population;
     private ArrayList<Path> fitness;
-    private Selection selector;
-    
+
     public TravellingSalesman(){
         current_generation=1;
         graphe = Graphe.create_graphe("cities.json");
@@ -36,7 +36,7 @@ public class TravellingSalesman extends Observable {
 
         population =new ArrayList<>();
         fitness = new ArrayList<>();
-        selector = new TournamentSelection();
+        selector = new KBestSelection();
     }
 
     public TravellingSalesman(String fichier){
@@ -130,16 +130,8 @@ public class TravellingSalesman extends Observable {
 
     //================================================================== Getter / Setter =====================================================================================
 
-    public ArrayList<Path> getPopulation() {
-        return population;
-    }
-
     public void setPopulation(ArrayList<Path> population) {
         this.population = population;
-    }
-
-    public Path getBestPath() {
-        return fitness.get(fitness.size() - 1);
     }
 
     public static void setMaxGeneration(int maxGeneration) {
@@ -164,6 +156,15 @@ public class TravellingSalesman extends Observable {
 
     public static void setMaxRepetitionSameFitness(int maxRepetitionSameFitness) {
         MAX_REPETITION_SAME_FITNESS = maxRepetitionSameFitness;
+    }
+
+    public void setSelector(Selection selector) {
+        this.selector = selector;
+        System.out.println(selector);
+    }
+
+    public ArrayList<Path> getPopulation() {
+        return population;
     }
 
     public ArrayList<Path> getFitness() {
@@ -194,4 +195,6 @@ public class TravellingSalesman extends Observable {
     public void setReplacementTotal(boolean raplaclementTotal) {
         this.replacementTotal = raplaclementTotal;
     }
+
+
 }
