@@ -25,7 +25,7 @@ public class Windows extends JFrame implements Observer {
     XYChartPanelTS xchart;
     TravellingSalesman travellingSaleman;
     Windows parent;
-    JButton begin,stop;
+    JButton begin;
     ArrayList<JComponent> components;
     Thread running;
     JComboBox<City> cities;
@@ -149,6 +149,7 @@ public class Windows extends JFrame implements Observer {
                     try {
                         xchart.addData("Fitness",new double []{ 0 },1);
                         jm.setEnabled(false);
+
                         TravellingSalesman.setPersentageMutation(Double.parseDouble(jtext1.getText()));
                         TravellingSalesman.setPopulationSize(Integer.parseInt(jtext2.getText()));
                         if (jtext3.isEnabled()) TravellingSalesman.setPersentageRemplacement(Double.parseDouble(jtext3.getText()));
@@ -157,10 +158,12 @@ public class Windows extends JFrame implements Observer {
                         TravellingSalesman.setMaxGeneration(Integer.parseInt(jtext7.getText()));
                         travellingSaleman.runAlgo();
                         travellingSaleman = null;
+                        cities = new JComboBox<>();
                         for(JComponent comp : components){
                             comp.setEnabled(false);
                         }
                         jm.setEnabled(true);
+
 
                     }
                     catch (NumberFormatException ex){
@@ -173,22 +176,7 @@ public class Windows extends JFrame implements Observer {
 
             }
         });
-        stop = new JButton("Fin");
-        stop.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(!(running.isInterrupted()) && travellingSaleman != null) {
 
-                    running.interrupt();
-                    travellingSaleman.stop();
-                    travellingSaleman = null;
-                    for(JComponent comp : components){
-                        comp.setEnabled(false);
-                    }
-                    jm.setEnabled(true);
-                }
-            }
-        });
         JLabel jlabel3 = new JLabel("Ville départ");
         cities = new JComboBox<>();
         JLabel jlabel4 = new JLabel("Type Remplacement");
@@ -243,7 +231,6 @@ public class Windows extends JFrame implements Observer {
         firstPart.add(jlabel5);
         firstPart.add(jtext3);
         firstPart.add(begin);
-        firstPart.add(stop);
         secondPart.add(jlabel3);
         secondPart.add(cities);
 

@@ -1,6 +1,7 @@
 package Structure_Donnees;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class City {
 
@@ -50,5 +51,11 @@ public class City {
     public String toString() {
         return name;
 
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

@@ -49,6 +49,7 @@ public class TravellingSalesman extends Observable {
         //creation des générations
         while (current_generation != MAX_GENERATION && !stopped && !is_same_fitness_since_n_gen()){
             fitness.add(population.get(0));
+
             setChanged();
             notifyObservers();
             System.out.println("====Generation : " + current_generation + "==========================================================================================================================================================================================");
