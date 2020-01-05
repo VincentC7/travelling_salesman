@@ -27,15 +27,7 @@ public class Windows extends JFrame implements Observer {
     Thread running;
     JComboBox<City> cities;
     JComboBox<String> remplacement,types;
-
-    /**
-     *Configuration de la condition du critère d'arrêt (par exemple, si vous choisissez un nombre de générations maximal,
-     *     laissez l'utilisateur choisir ce maximum)
-     *Configuration de l'algorithme de remplacement : si vous avez choisi un remplacement partiel, laissez l'utilisateur donner
-     *     la proportion d'individus de l'ancienne génération qui seront conservés
-     */
-
-
+    
 
     public Windows(/*Observable o*/){
         //o.addObserver(this);
@@ -144,15 +136,14 @@ public class Windows extends JFrame implements Observer {
             public void actionPerformed(ActionEvent e) {
                 running = new Thread(() -> {
                     try {
-                        xchart.addData("Fitness",new double []{ 0 },1);
-                        jm.setEnabled(false);
-
                         TravellingSalesman.setPersentageMutation(Double.parseDouble(jtext1.getText()));
                         TravellingSalesman.setPopulationSize(Integer.parseInt(jtext2.getText()));
                         if (jtext3.isEnabled()) TravellingSalesman.setPersentageRemplacement(Double.parseDouble(jtext3.getText()));
                         travellingSaleman.setReplacementTotal(remplacement.getSelectedItem().equals("Total"));
                         TravellingSalesman.setMaxRepetitionSameFitness(Integer.parseInt(jtext8.getText()));
                         TravellingSalesman.setMaxGeneration(Integer.parseInt(jtext7.getText()));
+                        xchart.addData("Fitness",new double []{ 0 },1);
+                        jm.setEnabled(false);
                         travellingSaleman.runAlgo();
                         travellingSaleman = null;
                         cities = new JComboBox<>();
