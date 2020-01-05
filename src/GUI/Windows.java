@@ -3,21 +3,16 @@ package GUI;
 import Algo.Path;
 import Algo.TravellingSalesman;
 import Structure_Donnees.City;
-import org.knowm.xchart.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.stream.Collectors;
-import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.plaf.basic.BasicMenuBarUI;
 
 @SuppressWarnings( "deprecation" )
 public class Windows extends JFrame implements Observer {
